@@ -1,8 +1,0 @@
-simv
-simv.daidir/
-csrc/
-coverage/
-*.log
-*.vcd
-ucli.key
-vc_hdrs.h
