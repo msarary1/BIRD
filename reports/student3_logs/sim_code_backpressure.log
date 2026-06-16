@@ -1,0 +1,107 @@
+Command: /home/st74/BIRD_1203022/./simv +TEST=backpressure -cm line+cond+fsm+tgl+branch -cm_dir reports/student3_code_coverage.vdb -cm_name backpressure -l sim_code_backpressure.log
+Chronologic VCS simulator copyright 1991-2022
+Contains Synopsys proprietary information.
+Compiler version T-2022.06-SP2_Full64; Runtime version T-2022.06-SP2_Full64;  Jun 16 11:27 2026
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+[TOP] Reset deasserted at time 45000
+[DRV] Driver started at time 45000
+[TOP] Selected TEST=backpressure
+[TEST] Starting bird_backpressure_test at 65000
+[LOCAL_SEQ] Sending local packet 0
+[LOCAL_SEQ] local_seq_pkt_0: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  crc=0xf3c1
+[LOCAL_SEQ] Sending local packet 1
+[LOCAL_SEQ] local_seq_pkt_1: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h11}  crc=0xe3e0
+[LOCAL_SEQ] Sending local packet 2
+[LOCAL_SEQ] local_seq_pkt_2: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h12}  crc=0xd383
+[BACKPRESSURE_SEQ] Starting output backpressure
+[DRV] Driving local_seq_pkt_0: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  crc=0xf3c1
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 10
+ssssssssssssssssss state moved to crc
+               85000 .........................crc_left 2  entered state moved to crc f3
+push crc byte f3
+               95000 .........................crc_left 1  entered state moved to crc c1
+push crc byte c1
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  input_crc=0xf3c1 time=75000..95000
+[SB] Observed input fragment count = 1
+[DRV] Driving local_seq_pkt_1: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h11}  crc=0xe3e0
+[LOCAL_MON] LOCAL_OUT: byte=0xf3 drop_cnt=0 time=105000
+[SB] Observed local byte count = 1
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 11
+ssssssssssssssssss state moved to crc
+              125000 .........................crc_left 2  entered state moved to crc e3
+push crc byte e3
+              135000 .........................crc_left 1  entered state moved to crc e0
+push crc byte e0
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h11}  input_crc=0xe3e0 time=115000..135000
+[SB] Observed input fragment count = 2
+[DRV] Driving local_seq_pkt_2: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h12}  crc=0xd383
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 12
+ssssssssssssssssss state moved to crc
+              165000 .........................crc_left 2  entered state moved to crc d3
+push crc byte d3
+              175000 .........................crc_left 1  entered state moved to crc 83
+push crc byte 83
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h12}  input_crc=0xd383 time=155000..175000
+[SB] Observed input fragment count = 3
+[LOCAL_MON] LOCAL_OUT: byte=0xc1 drop_cnt=0 time=185000
+[SB] Observed local byte count = 2
+[LOCAL_MON] LOCAL_OUT: byte=0x11 drop_cnt=0 time=205000
+[SB] Observed local byte count = 3
+[LOCAL_MON] LOCAL_OUT: byte=0x11 drop_cnt=0 time=215000
+[SB] Observed local byte count = 4
+[LOCAL_MON] LOCAL_OUT: byte=0xe0 drop_cnt=0 time=235000
+[SB] Observed local byte count = 5
+[LOCAL_MON] LOCAL_OUT: byte=0xe0 drop_cnt=0 time=245000
+[SB] Observed local byte count = 6
+[LOCAL_MON] LOCAL_OUT: byte=0xd3 drop_cnt=0 time=285000
+[SB] Observed local byte count = 7
+[LOCAL_MON] LOCAL_OUT: byte=0xd3 drop_cnt=0 time=295000
+[SB] Observed local byte count = 8
+[LOCAL_MON] LOCAL_OUT: byte=0x83 drop_cnt=0 time=305000
+[SB] Observed local byte count = 9
+[BACKPRESSURE_SEQ] Finished output backpressure
+
+================ BIRD STARTER SCOREBOARD REPORT ================
+Input fragments observed : 3
+Local bytes observed     : 9
+Remote words observed    : 0
+NOTE: This is a starter scoreboard only.
+Next step: add real expected-vs-actual checking.
+================================================================
+
+
+================ BIRD FUNCTIONAL COVERAGE REPORT ================
+Input samples      : 9
+Local samples      : 9
+Remote samples     : 0
+Drop samples       : 232
+Handshake samples  : 232
+cg_input coverage      = 23.75%
+cg_output coverage     = 41.67%
+cg_drop coverage       = 25.00%
+cg_handshake coverage  = 66.67%
+Total functional cov   = 39.27%
+=================================================================
+
+[TEST] Finished bird_backpressure_test at 2365000
+$finish called from file "tb/bird_tb_top.sv", line 120.
+$finish at simulation time              2465000
+
+---------------------------------------------------------------------------
+VCS Coverage Metrics: during simulation line, cond, FSM, branch, tgl was monitored
+---------------------------------------------------------------------------
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 2465000 ps
+CPU Time:      0.440 seconds;       Data structure size:   0.1Mb
+Tue Jun 16 11:27:33 2026

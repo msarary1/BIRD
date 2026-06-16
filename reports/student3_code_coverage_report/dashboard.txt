@@ -1,0 +1,33 @@
+Dashboard
+
+Date: Tue Jun 16 11:33:02 2026
+
+User: st74
+
+Version: T-2022.06-SP2
+Command line: urg -dir reports/student3_code_coverage.vdb -format both -report reports/student3_code_coverage_report
+Number of tests: 6
+
+-------------------------------------------------------------------------------
+Total Coverage Summary 
+SCORE  LINE   COND   TOGGLE FSM    BRANCH GROUP  
+ 54.89  58.93  43.90  37.85  80.00  54.72  53.96 
+
+
+-------------------------------------------------------------------------------
+Hierarchical coverage data for top-level instances 
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME        
+ 55.08  58.93  43.90  37.85  80.00  54.72 bird_tb_top 
+
+
+-------------------------------------------------------------------------------
+Total Module Definition Coverage Summary 
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 55.08  58.93  43.90  37.85  80.00  54.72 
+
+
+-------------------------------------------------------------------------------
+Total Groups Coverage Summary 
+SCORE  INST SCORE WEIGHT 
+ 53.96  53.96     1      
+

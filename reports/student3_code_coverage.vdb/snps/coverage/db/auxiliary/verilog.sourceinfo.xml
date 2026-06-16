@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE cov SYSTEM "ucdb_srcinfo.dtd">
+  <srcinfo name="/home/st74/BIRD_1203022"  >
+    <ucapi_version  major_ver="13"  minor_ver="1"  patch_str="T-2022.06-SP2"  />
+      <fileinfo name="tb/bird_if.sv"  id="0"  timestamp="1781597911"  />
+      <fileinfo name="tb/bird_pkg.sv"  id="1"  timestamp="1781598253"  />
+      <fileinfo name="tb/bird_transaction.sv"  id="2"  timestamp="1781597911"  />
+      <fileinfo name="tb/bird_driver.sv"  id="3"  timestamp="1781597911"  />
+      <fileinfo name="tb/bird_monitor.sv"  id="4"  timestamp="1781597911"  />
+      <fileinfo name="tb/bird_scoreboard.sv"  id="5"  timestamp="1781597911"  />
+      <fileinfo name="tb/bird_coverage.sv"  id="6"  timestamp="1781598060"  />
+      <fileinfo name="tb/bird_agent.sv"  id="7"  timestamp="1781597911"  />
+      <fileinfo name="tb/bird_env.sv"  id="8"  timestamp="1781598162"  />
+      <fileinfo name="seq/bird_local_seq.sv"  id="9"  timestamp="1781597911"  />
+      <fileinfo name="seq/bird_remote_seq.sv"  id="10"  timestamp="1781597911"  />
+      <fileinfo name="seq/bird_invalid_seq.sv"  id="11"  timestamp="1781597911"  />
+      <fileinfo name="seq/bird_backpressure_seq.sv"  id="12"  timestamp="1781597911"  />
+      <fileinfo name="seq/bird_reset_seq.sv"  id="13"  timestamp="1781597911"  />
+      <fileinfo name="tests/bird_smoke_test.sv"  id="14"  timestamp="1781597911"  />
+      <fileinfo name="tests/bird_local_test.sv"  id="15"  timestamp="1781597911"  />
+      <fileinfo name="tests/bird_remote_test.sv"  id="16"  timestamp="1781597911"  />
+      <fileinfo name="tests/bird_invalid_drop_test.sv"  id="17"  timestamp="1781597911"  />
+      <fileinfo name="tests/bird_backpressure_test.sv"  id="18"  timestamp="1781597911"  />
+      <fileinfo name="tests/bird_reset_test.sv"  id="19"  timestamp="1781597911"  />
+      <fileinfo name="design/bird.sv"  id="20"  timestamp="1781597911"  />
+      <fileinfo name="tb/bird_tb_top.sv"  id="21"  timestamp="1781597911"  />
+      <fileinfo name=""  id="22"  />
+    </srcinfo>

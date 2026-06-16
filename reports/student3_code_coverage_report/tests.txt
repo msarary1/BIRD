@@ -1,0 +1,17 @@
+Tests
+
+Total Coverage Summary 
+SCORE  LINE   COND   TOGGLE FSM    BRANCH GROUP  
+ 54.89  58.93  43.90  37.85  80.00  54.72  53.96 
+
+
+Total tests in report: 6
+-------------------------------------------------------------------------------
+Data from the following tests was used to generate this report
+reports/student3_code_coverage/invalid      
+reports/student3_code_coverage/remote       
+reports/student3_code_coverage/local        
+reports/student3_code_coverage/backpressure 
+reports/student3_code_coverage/reset        
+reports/student3_code_coverage/smoke        
+

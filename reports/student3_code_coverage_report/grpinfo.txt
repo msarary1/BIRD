@@ -1,0 +1,996 @@
+Group : bird_pkg::bird_coverage::cg_output
+
+===============================================================================
+Group : bird_pkg::bird_coverage::cg_output
+===============================================================================
+SCORE  INSTANCES WEIGHT GOAL   AT LEAST PER INSTANCE AUTO BIN MAX PRINT MISSING 
+ 41.67  41.67    1      100    1        1            64           64            
+
+
+Source File(s) : 
+
+/home/st74/BIRD_1203022/tb/bird_coverage.sv
+
+1 Instances:
+
+SCORE  WEIGHT GOAL   AT LEAST AUTO BIN MAX PRINT MISSING NAME                               
+ 41.67 1      100    1        64           64            bird_tb_top.env.coverage.cg_output 
+
+
+
+
+-------------------------------------------------------------------------------
+
+Summary for Group   bird_pkg::bird_coverage::cg_output
+
+
+
+CATEGORY  EXPECTED UNCOVERED COVERED PERCENT 
+Variables 4        2         2       50.00   
+Crosses   4        3         1       25.00   
+
+
+Variables for Group  bird_pkg::bird_coverage::cg_output
+
+
+VARIABLE           EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST AUTO BIN MAX COMMENT 
+cp_local_transfer  2        1         1       50.00   100  1      1        0                    
+cp_remote_transfer 2        1         1       50.00   100  1      1        0                    
+
+
+Crosses for Group  bird_pkg::bird_coverage::cg_output
+
+
+CROSS         EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST PRINT MISSING COMMENT 
+cross_outputs 4        3         1       25.00   100  1      1        0                     
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_local_transfer
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 2        1         1       50.00   
+
+
+User Defined Bins for cp_local_transfer
+
+
+Uncovered bins
+
+NAME     COUNT AT LEAST NUMBER 
+no_local 0     1        1      
+
+
+Covered bins
+
+NAME      COUNT AT LEAST 
+has_local 30    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_remote_transfer
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 2        1         1       50.00   
+
+
+User Defined Bins for cp_remote_transfer
+
+
+Uncovered bins
+
+NAME       COUNT AT LEAST NUMBER 
+has_remote 0     1        1      
+
+
+Covered bins
+
+NAME      COUNT AT LEAST 
+no_remote 30    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Cross cross_outputs
+
+
+Samples crossed: cp_local_transfer cp_remote_transfer
+CATEGORY                           EXPECTED UNCOVERED COVERED PERCENT MISSING 
+Automatically Generated Cross Bins 4        3         1       25.00   3       
+
+
+Automatically Generated Cross Bins for cross_outputs
+
+
+Element holes
+
+cp_local_transfer cp_remote_transfer COUNT AT LEAST NUMBER 
+[no_local]        *                  --    --       2      
+
+
+Uncovered bins
+
+cp_local_transfer cp_remote_transfer COUNT AT LEAST NUMBER 
+[has_local]       [has_remote]       0     1        1      
+
+
+Covered bins
+
+cp_local_transfer cp_remote_transfer COUNT AT LEAST 
+has_local         no_remote          30    1        
+
+
+-------------------------------------------------------------------------------
+===============================================================================
+Group Instance : bird_tb_top.env.coverage.cg_output
+===============================================================================
+SCORE  WEIGHT GOAL   AT LEAST AUTO BIN MAX PRINT MISSING 
+ 41.67 1      100    1        64           64            
+
+
+Group:
+
+SCORE  INSTANCES WEIGHT GOAL   AT LEAST PER INSTANCE AUTO BIN MAX PRINT MISSING COMMENT NAME                               
+ 41.67  41.67    1      100    1        1            64           64                    bird_pkg::bird_coverage::cg_output 
+
+
+
+-------------------------------------------------------------------------------
+
+Summary for Group Instance   bird_tb_top.env.coverage.cg_output
+
+
+
+CATEGORY  EXPECTED UNCOVERED COVERED PERCENT 
+Variables 4        2         2       50.00   
+Crosses   4        3         1       25.00   
+
+
+Variables for Group Instance  bird_tb_top.env.coverage.cg_output
+
+
+VARIABLE           EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST AUTO BIN MAX COMMENT 
+cp_local_transfer  2        1         1       50.00   100  1      1        0                    
+cp_remote_transfer 2        1         1       50.00   100  1      1        0                    
+
+
+Crosses for Group Instance  bird_tb_top.env.coverage.cg_output
+
+
+CROSS         EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST PRINT MISSING COMMENT 
+cross_outputs 4        3         1       25.00   100  1      1        0                     
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_local_transfer
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 2        1         1       50.00   
+
+
+User Defined Bins for cp_local_transfer
+
+
+Uncovered bins
+
+NAME     COUNT AT LEAST NUMBER 
+no_local 0     1        1      
+
+
+Covered bins
+
+NAME      COUNT AT LEAST 
+has_local 30    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_remote_transfer
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 2        1         1       50.00   
+
+
+User Defined Bins for cp_remote_transfer
+
+
+Uncovered bins
+
+NAME       COUNT AT LEAST NUMBER 
+has_remote 0     1        1      
+
+
+Covered bins
+
+NAME      COUNT AT LEAST 
+no_remote 30    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Cross cross_outputs
+
+
+Samples crossed: cp_local_transfer cp_remote_transfer
+CATEGORY                           EXPECTED UNCOVERED COVERED PERCENT MISSING 
+Automatically Generated Cross Bins 4        3         1       25.00   3       
+
+
+Automatically Generated Cross Bins for cross_outputs
+
+
+Element holes
+
+cp_local_transfer cp_remote_transfer COUNT AT LEAST NUMBER 
+[no_local]        *                  --    --       2      
+
+
+Uncovered bins
+
+cp_local_transfer cp_remote_transfer COUNT AT LEAST NUMBER 
+[has_local]       [has_remote]       0     1        1      
+
+
+Covered bins
+
+cp_local_transfer cp_remote_transfer COUNT AT LEAST 
+has_local         no_remote          30    1        
+
+
+Group : bird_pkg::bird_coverage::cg_drop
+
+===============================================================================
+Group : bird_pkg::bird_coverage::cg_drop
+===============================================================================
+SCORE  INSTANCES WEIGHT GOAL   AT LEAST PER INSTANCE AUTO BIN MAX PRINT MISSING 
+ 50.00  50.00    1      100    1        1            64           64            
+
+
+Source File(s) : 
+
+/home/st74/BIRD_1203022/tb/bird_coverage.sv
+
+1 Instances:
+
+SCORE  WEIGHT GOAL   AT LEAST AUTO BIN MAX PRINT MISSING NAME                             
+ 50.00 1      100    1        64           64            bird_tb_top.env.coverage.cg_drop 
+
+
+
+
+-------------------------------------------------------------------------------
+
+Summary for Group   bird_pkg::bird_coverage::cg_drop
+
+
+
+CATEGORY  EXPECTED UNCOVERED COVERED PERCENT 
+Variables 4        2         2       50.00   
+
+
+Variables for Group  bird_pkg::bird_coverage::cg_drop
+
+
+VARIABLE    EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST AUTO BIN MAX COMMENT 
+cp_drop_cnt 4        2         2       50.00   100  1      1        0                    
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_drop_cnt
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        2         2       50.00   
+
+
+User Defined Bins for cp_drop_cnt
+
+
+Uncovered bins
+
+NAME      COUNT AT LEAST NUMBER 
+high_drop 0     1        1      
+mid_drop  0     1        1      
+
+
+Covered bins
+
+NAME      COUNT AT LEAST 
+low_drop  364   1        
+zero_drop 648   1        
+
+
+-------------------------------------------------------------------------------
+===============================================================================
+Group Instance : bird_tb_top.env.coverage.cg_drop
+===============================================================================
+SCORE  WEIGHT GOAL   AT LEAST AUTO BIN MAX PRINT MISSING 
+ 50.00 1      100    1        64           64            
+
+
+Group:
+
+SCORE  INSTANCES WEIGHT GOAL   AT LEAST PER INSTANCE AUTO BIN MAX PRINT MISSING COMMENT NAME                             
+ 50.00  50.00    1      100    1        1            64           64                    bird_pkg::bird_coverage::cg_drop 
+
+
+
+-------------------------------------------------------------------------------
+
+Summary for Group Instance   bird_tb_top.env.coverage.cg_drop
+
+
+
+CATEGORY  EXPECTED UNCOVERED COVERED PERCENT 
+Variables 4        2         2       50.00   
+
+
+Variables for Group Instance  bird_tb_top.env.coverage.cg_drop
+
+
+VARIABLE    EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST AUTO BIN MAX COMMENT 
+cp_drop_cnt 4        2         2       50.00   100  1      1        0                    
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_drop_cnt
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        2         2       50.00   
+
+
+User Defined Bins for cp_drop_cnt
+
+
+Uncovered bins
+
+NAME      COUNT AT LEAST NUMBER 
+high_drop 0     1        1      
+mid_drop  0     1        1      
+
+
+Covered bins
+
+NAME      COUNT AT LEAST 
+low_drop  364   1        
+zero_drop 648   1        
+
+
+Group : bird_pkg::bird_coverage::cg_input
+
+===============================================================================
+Group : bird_pkg::bird_coverage::cg_input
+===============================================================================
+SCORE  INSTANCES WEIGHT GOAL   AT LEAST PER INSTANCE AUTO BIN MAX PRINT MISSING 
+ 57.50  57.50    1      100    1        1            64           64            
+
+
+Source File(s) : 
+
+/home/st74/BIRD_1203022/tb/bird_coverage.sv
+
+1 Instances:
+
+SCORE  WEIGHT GOAL   AT LEAST AUTO BIN MAX PRINT MISSING NAME                              
+ 57.50 1      100    1        64           64            bird_tb_top.env.coverage.cg_input 
+
+
+
+
+-------------------------------------------------------------------------------
+
+Summary for Group   bird_pkg::bird_coverage::cg_input
+
+
+
+CATEGORY  EXPECTED UNCOVERED COVERED PERCENT 
+Variables 15       6         9       66.25   
+Crosses   18       11        7       40.00   
+
+
+Variables for Group  bird_pkg::bird_coverage::cg_input
+
+
+VARIABLE  EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST AUTO BIN MAX COMMENT 
+cp_remote 2        0         2       100.00  100  1      1        0                    
+cp_len    5        3         2       40.00   100  1      1        0                    
+cp_frag   4        2         2       50.00   100  1      1        0                    
+cp_seq    4        1         3       75.00   100  1      1        0                    
+
+
+Crosses for Group  bird_pkg::bird_coverage::cg_input
+
+
+CROSS             EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST PRINT MISSING COMMENT 
+cross_remote_len  10       7         3       30.00   100  1      1        0                     
+cross_remote_frag 8        4         4       50.00   100  1      1        0                     
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_remote
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 2        0         2       100.00  
+
+
+User Defined Bins for cp_remote
+
+
+Bins
+
+NAME       COUNT AT LEAST 
+remote_pkt 9     1        
+local_pkt  36    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_len
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 5        3         2       40.00   
+
+
+User Defined Bins for cp_len
+
+
+Uncovered bins
+
+NAME      COUNT AT LEAST NUMBER 
+len_large 0     1        1      
+len_mid   0     1        1      
+len_zero  0     1        1      
+
+
+Covered bins
+
+NAME      COUNT AT LEAST 
+len_small 6     1        
+len_one   39    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_frag
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        2         2       50.00   
+
+
+User Defined Bins for cp_frag
+
+
+Uncovered bins
+
+NAME      COUNT AT LEAST NUMBER 
+frag_high 0     1        1      
+frag_zero 0     1        1      
+
+
+Covered bins
+
+NAME     COUNT AT LEAST 
+frag_mid 6     1        
+frag_one 39    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_seq
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        1         3       75.00   
+
+
+User Defined Bins for cp_seq
+
+
+Uncovered bins
+
+NAME     COUNT AT LEAST NUMBER 
+seq_high 0     1        1      
+
+
+Covered bins
+
+NAME     COUNT AT LEAST 
+seq_mid  6     1        
+seq_one  36    1        
+seq_zero 3     1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Cross cross_remote_len
+
+
+Samples crossed: cp_remote cp_len
+CATEGORY                           EXPECTED UNCOVERED COVERED PERCENT MISSING 
+Automatically Generated Cross Bins 10       7         3       30.00   7       
+
+
+Automatically Generated Cross Bins for cross_remote_len
+
+
+Uncovered bins
+
+cp_remote    cp_len                            COUNT AT LEAST NUMBER 
+[remote_pkt] [len_large , len_mid , len_small] --    --       3      
+[remote_pkt] [len_zero]                        0     1        1      
+[local_pkt]  [len_large , len_mid]             --    --       2      
+[local_pkt]  [len_zero]                        0     1        1      
+
+
+Covered bins
+
+cp_remote  cp_len    COUNT AT LEAST 
+remote_pkt len_one   9     1        
+local_pkt  len_small 6     1        
+local_pkt  len_one   30    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Cross cross_remote_frag
+
+
+Samples crossed: cp_remote cp_frag
+CATEGORY                           EXPECTED UNCOVERED COVERED PERCENT MISSING 
+Automatically Generated Cross Bins 8        4         4       50.00   4       
+
+
+Automatically Generated Cross Bins for cross_remote_frag
+
+
+Element holes
+
+cp_remote cp_frag     COUNT AT LEAST NUMBER 
+*         [frag_high] --    --       2      
+*         [frag_zero] --    --       2      
+
+
+Covered bins
+
+cp_remote  cp_frag  COUNT AT LEAST 
+remote_pkt frag_mid 3     1        
+remote_pkt frag_one 6     1        
+local_pkt  frag_mid 3     1        
+local_pkt  frag_one 33    1        
+
+
+-------------------------------------------------------------------------------
+===============================================================================
+Group Instance : bird_tb_top.env.coverage.cg_input
+===============================================================================
+SCORE  WEIGHT GOAL   AT LEAST AUTO BIN MAX PRINT MISSING 
+ 57.50 1      100    1        64           64            
+
+
+Group:
+
+SCORE  INSTANCES WEIGHT GOAL   AT LEAST PER INSTANCE AUTO BIN MAX PRINT MISSING COMMENT NAME                              
+ 57.50  57.50    1      100    1        1            64           64                    bird_pkg::bird_coverage::cg_input 
+
+
+
+-------------------------------------------------------------------------------
+
+Summary for Group Instance   bird_tb_top.env.coverage.cg_input
+
+
+
+CATEGORY  EXPECTED UNCOVERED COVERED PERCENT 
+Variables 15       6         9       66.25   
+Crosses   18       11        7       40.00   
+
+
+Variables for Group Instance  bird_tb_top.env.coverage.cg_input
+
+
+VARIABLE  EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST AUTO BIN MAX COMMENT 
+cp_remote 2        0         2       100.00  100  1      1        0                    
+cp_len    5        3         2       40.00   100  1      1        0                    
+cp_frag   4        2         2       50.00   100  1      1        0                    
+cp_seq    4        1         3       75.00   100  1      1        0                    
+
+
+Crosses for Group Instance  bird_tb_top.env.coverage.cg_input
+
+
+CROSS             EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST PRINT MISSING COMMENT 
+cross_remote_len  10       7         3       30.00   100  1      1        0                     
+cross_remote_frag 8        4         4       50.00   100  1      1        0                     
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_remote
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 2        0         2       100.00  
+
+
+User Defined Bins for cp_remote
+
+
+Bins
+
+NAME       COUNT AT LEAST 
+remote_pkt 9     1        
+local_pkt  36    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_len
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 5        3         2       40.00   
+
+
+User Defined Bins for cp_len
+
+
+Uncovered bins
+
+NAME      COUNT AT LEAST NUMBER 
+len_large 0     1        1      
+len_mid   0     1        1      
+len_zero  0     1        1      
+
+
+Covered bins
+
+NAME      COUNT AT LEAST 
+len_small 6     1        
+len_one   39    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_frag
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        2         2       50.00   
+
+
+User Defined Bins for cp_frag
+
+
+Uncovered bins
+
+NAME      COUNT AT LEAST NUMBER 
+frag_high 0     1        1      
+frag_zero 0     1        1      
+
+
+Covered bins
+
+NAME     COUNT AT LEAST 
+frag_mid 6     1        
+frag_one 39    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_seq
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        1         3       75.00   
+
+
+User Defined Bins for cp_seq
+
+
+Uncovered bins
+
+NAME     COUNT AT LEAST NUMBER 
+seq_high 0     1        1      
+
+
+Covered bins
+
+NAME     COUNT AT LEAST 
+seq_mid  6     1        
+seq_one  36    1        
+seq_zero 3     1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Cross cross_remote_len
+
+
+Samples crossed: cp_remote cp_len
+CATEGORY                           EXPECTED UNCOVERED COVERED PERCENT MISSING 
+Automatically Generated Cross Bins 10       7         3       30.00   7       
+
+
+Automatically Generated Cross Bins for cross_remote_len
+
+
+Uncovered bins
+
+cp_remote    cp_len                            COUNT AT LEAST NUMBER 
+[remote_pkt] [len_large , len_mid , len_small] --    --       3      
+[remote_pkt] [len_zero]                        0     1        1      
+[local_pkt]  [len_large , len_mid]             --    --       2      
+[local_pkt]  [len_zero]                        0     1        1      
+
+
+Covered bins
+
+cp_remote  cp_len    COUNT AT LEAST 
+remote_pkt len_one   9     1        
+local_pkt  len_small 6     1        
+local_pkt  len_one   30    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Cross cross_remote_frag
+
+
+Samples crossed: cp_remote cp_frag
+CATEGORY                           EXPECTED UNCOVERED COVERED PERCENT MISSING 
+Automatically Generated Cross Bins 8        4         4       50.00   4       
+
+
+Automatically Generated Cross Bins for cross_remote_frag
+
+
+Element holes
+
+cp_remote cp_frag     COUNT AT LEAST NUMBER 
+*         [frag_high] --    --       2      
+*         [frag_zero] --    --       2      
+
+
+Covered bins
+
+cp_remote  cp_frag  COUNT AT LEAST 
+remote_pkt frag_mid 3     1        
+remote_pkt frag_one 6     1        
+local_pkt  frag_mid 3     1        
+local_pkt  frag_one 33    1        
+
+
+Group : bird_pkg::bird_coverage::cg_handshake
+
+===============================================================================
+Group : bird_pkg::bird_coverage::cg_handshake
+===============================================================================
+SCORE  INSTANCES WEIGHT GOAL   AT LEAST PER INSTANCE AUTO BIN MAX PRINT MISSING 
+ 66.67  66.67    1      100    1        1            64           64            
+
+
+Source File(s) : 
+
+/home/st74/BIRD_1203022/tb/bird_coverage.sv
+
+1 Instances:
+
+SCORE  WEIGHT GOAL   AT LEAST AUTO BIN MAX PRINT MISSING NAME                                  
+ 66.67 1      100    1        64           64            bird_tb_top.env.coverage.cg_handshake 
+
+
+
+
+-------------------------------------------------------------------------------
+
+Summary for Group   bird_pkg::bird_coverage::cg_handshake
+
+
+
+CATEGORY  EXPECTED UNCOVERED COVERED PERCENT 
+Variables 12       4         8       66.67   
+
+
+Variables for Group  bird_pkg::bird_coverage::cg_handshake
+
+
+VARIABLE     EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST AUTO BIN MAX COMMENT 
+cp_input_hs  4        2         2       50.00   100  1      1        0                    
+cp_local_hs  4        0         4       100.00  100  1      1        0                    
+cp_remote_hs 4        2         2       50.00   100  1      1        0                    
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_input_hs
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        2         2       50.00   
+
+
+User Defined Bins for cp_input_hs
+
+
+Uncovered bins
+
+NAME       COUNT AT LEAST NUMBER 
+wait_ready 0     1        1      
+idle       0     1        1      
+
+
+Covered bins
+
+NAME       COUNT AT LEAST 
+transfer   45    1        
+ready_only 967   1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_local_hs
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        0         4       100.00  
+
+
+User Defined Bins for cp_local_hs
+
+
+Bins
+
+NAME       COUNT AT LEAST 
+transfer   30    1        
+wait_ready 13    1        
+ready_only 926   1        
+idle       43    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_remote_hs
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        2         2       50.00   
+
+
+User Defined Bins for cp_remote_hs
+
+
+Uncovered bins
+
+NAME       COUNT AT LEAST NUMBER 
+transfer   0     1        1      
+wait_ready 0     1        1      
+
+
+Covered bins
+
+NAME       COUNT AT LEAST 
+ready_only 967   1        
+idle       45    1        
+
+
+-------------------------------------------------------------------------------
+===============================================================================
+Group Instance : bird_tb_top.env.coverage.cg_handshake
+===============================================================================
+SCORE  WEIGHT GOAL   AT LEAST AUTO BIN MAX PRINT MISSING 
+ 66.67 1      100    1        64           64            
+
+
+Group:
+
+SCORE  INSTANCES WEIGHT GOAL   AT LEAST PER INSTANCE AUTO BIN MAX PRINT MISSING COMMENT NAME                                  
+ 66.67  66.67    1      100    1        1            64           64                    bird_pkg::bird_coverage::cg_handshake 
+
+
+
+-------------------------------------------------------------------------------
+
+Summary for Group Instance   bird_tb_top.env.coverage.cg_handshake
+
+
+
+CATEGORY  EXPECTED UNCOVERED COVERED PERCENT 
+Variables 12       4         8       66.67   
+
+
+Variables for Group Instance  bird_tb_top.env.coverage.cg_handshake
+
+
+VARIABLE     EXPECTED UNCOVERED COVERED PERCENT GOAL WEIGHT AT LEAST AUTO BIN MAX COMMENT 
+cp_input_hs  4        2         2       50.00   100  1      1        0                    
+cp_local_hs  4        0         4       100.00  100  1      1        0                    
+cp_remote_hs 4        2         2       50.00   100  1      1        0                    
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_input_hs
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        2         2       50.00   
+
+
+User Defined Bins for cp_input_hs
+
+
+Uncovered bins
+
+NAME       COUNT AT LEAST NUMBER 
+wait_ready 0     1        1      
+idle       0     1        1      
+
+
+Covered bins
+
+NAME       COUNT AT LEAST 
+transfer   45    1        
+ready_only 967   1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_local_hs
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        0         4       100.00  
+
+
+User Defined Bins for cp_local_hs
+
+
+Bins
+
+NAME       COUNT AT LEAST 
+transfer   30    1        
+wait_ready 13    1        
+ready_only 926   1        
+idle       43    1        
+
+
+-------------------------------------------------------------------------------
+
+Summary for Variable cp_remote_hs
+
+
+CATEGORY          EXPECTED UNCOVERED COVERED PERCENT 
+User Defined Bins 4        2         2       50.00   
+
+
+User Defined Bins for cp_remote_hs
+
+
+Uncovered bins
+
+NAME       COUNT AT LEAST NUMBER 
+transfer   0     1        1      
+wait_ready 0     1        1      
+
+
+Covered bins
+
+NAME       COUNT AT LEAST 
+ready_only 967   1        
+idle       45    1        
+
+
