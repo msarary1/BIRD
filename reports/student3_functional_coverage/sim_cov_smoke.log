@@ -1,0 +1,72 @@
+Command: /home/st74/BIRD_1203022/./simv +TEST=smoke -l sim_cov_smoke.log
+Chronologic VCS simulator copyright 1991-2022
+Contains Synopsys proprietary information.
+Compiler version T-2022.06-SP2_Full64; Runtime version T-2022.06-SP2_Full64;  Jun 16 11:25 2026
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+[TOP] Reset deasserted at time 45000
+[DRV] Driver started at time 45000
+[TOP] Selected TEST=smoke
+[TEST] Starting BIRD pure SystemVerilog smoke test at 65000
+[DRV] Driving local_smoke_packet: remote=0 len=4 frag=1 seq=1 cfg=0x01010400 payload='{'h11, 'h22, 'h33, 'h44}  crc=0x59f3
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 11
+ssssssssssssssssss state moved to payload
+push payload byte 22
+               95000 .........................crc_left 2  entered state moved to crc 33
+push crc byte 33
+[LOCAL_MON] LOCAL_OUT: byte=0x11 drop_cnt=0 time=95000
+[SB] Observed local byte count = 1
+              105000 .........................crc_left 1  entered state moved to crc 44
+push crc byte 44
+ssssssssssssssssss state moved to idle
+[LOCAL_MON] LOCAL_OUT: byte=0x22 drop_cnt=0 time=105000
+[SB] Observed local byte count = 2
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 59
+ssssssssssssssssss state moved to payload
+[LOCAL_MON] LOCAL_OUT: byte=0x33 drop_cnt=0 time=115000
+[SB] Observed local byte count = 3
+push payload byte f3
+[IN_MON] INPUT_FRAGMENT: remote=0 len=4 frag=1 seq=1 cfg=0x01010400 payload='{'h11, 'h22, 'h33, 'h44}  input_crc=0x59f3 time=75000..125000
+[LOCAL_MON] LOCAL_OUT: byte=0x44 drop_cnt=0 time=125000
+[SB] Observed input fragment count = 1
+[SB] Observed local byte count = 4
+[LOCAL_MON] LOCAL_OUT: byte=0x59 drop_cnt=0 time=135000
+[SB] Observed local byte count = 5
+[LOCAL_MON] LOCAL_OUT: byte=0xf3 drop_cnt=0 time=145000
+[SB] Observed local byte count = 6
+
+================ BIRD STARTER SCOREBOARD REPORT ================
+Input fragments observed : 1
+Local bytes observed     : 6
+Remote words observed    : 0
+NOTE: This is a starter scoreboard only.
+Next step: add real expected-vs-actual checking.
+================================================================
+
+
+================ BIRD FUNCTIONAL COVERAGE REPORT ================
+Input samples      : 6
+Local samples      : 6
+Remote samples     : 0
+Drop samples       : 81
+Handshake samples  : 81
+cg_input coverage      = 23.75%
+cg_output coverage     = 41.67%
+cg_drop coverage       = 25.00%
+cg_handshake coverage  = 41.67%
+Total functional cov   = 33.02%
+=================================================================
+
+[TEST] Finished smoke test at 855000
+$finish called from file "tb/bird_tb_top.sv", line 120.
+$finish at simulation time               955000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 955000 ps
+CPU Time:      0.370 seconds;       Data structure size:   0.0Mb
+Tue Jun 16 11:25:27 2026

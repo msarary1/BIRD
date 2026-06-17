@@ -1,0 +1,1444 @@
+===============================================================================
+Module : bird_if
+===============================================================================
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 37.02 --     --      37.02 --     --     
+
+Source File(s) : 
+
+/home/st74/BIRD_1203022/tb/bird_if.sv
+
+Module self-instances :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME                 
+ 37.02 --     --      37.02 --     --     bird_tb_top.bird_vif 
+
+
+
+-------------------------------------------------------------------------------
+Toggle Coverage for Module : bird_if
+                Total Covered Percent 
+Totals          13    8       61.54   
+Total Bits      208   77      37.02   
+Total Bits 0->1 104   39      37.50   
+Total Bits 1->0 104   38      36.54   
+
+                          
+Ports          1 1 100.00 
+Port Bits      2 2 100.00 
+Port Bits 0->1 1 1 100.00 
+Port Bits 1->0 1 1 100.00 
+
+                               
+Signals          12  7  58.33  
+Signal Bits      206 75 36.41  
+Signal Bits 0->1 103 38 36.89  
+Signal Bits 1->0 103 37 35.92  
+
+Port Details
+    Toggle Toggle 1->0 Toggle 0->1 Direction 
+clk Yes    Yes         Yes         INPUT     
+
+Signal Details
+                  Toggle Toggle 1->0 Toggle 0->1 
+rst_n             Yes    Yes         Yes         
+in_vld            Yes    Yes         Yes         
+in_rdy            No     No          No          
+data_in[7:0]      Yes    Yes         Yes         
+cfg[8:0]          Yes    Yes         Yes         
+cfg[9]            No     No          No          
+cfg[10]           Yes    Yes         Yes         
+cfg[15:11]        No     No          No          
+cfg[17:16]        Yes    Yes         Yes         
+cfg[23:18]        No     No          No          
+cfg[25:24]        Yes    Yes         Yes         
+cfg[31:26]        No     No          No          
+drop_cnt[1:0]     Yes    Yes         Yes         
+drop_cnt[2]       No     No          Yes         
+drop_cnt[15:3]    No     No          No          
+local_vld         Yes    Yes         Yes         
+local_rdy         Yes    Yes         Yes         
+data_local[7:0]   Yes    Yes         Yes         
+remote_vld        No     No          No          
+remote_rdy        Yes    Yes         Yes         
+data_remote[31:0] No     No          No          
+
+
+-------------------------------------------------------------------------------
+===============================================================================
+Module Instance : bird_tb_top.bird_vif
+===============================================================================
+
+Instance :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 37.02 --     --      37.02 --     --     
+
+
+Instance's subtree :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 37.02 --     --      37.02 --     --     
+
+
+Module : 
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME    
+ 37.02 --     --      37.02 --     --     bird_if 
+
+
+Parent : 
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME        
+ 88.89  88.89 --     100.00 --      77.78 bird_tb_top 
+
+
+Subtrees :
+
+
+no children
+----------------
+
+
+-------------------------------------------------------------------------------
+Since this is the module's only instance, the coverage report is the same as for the module.
+===============================================================================
+Module : bird
+===============================================================================
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 52.67  51.40  43.90  38.07  80.00  50.00 
+
+Source File(s) : 
+
+/home/st74/BIRD_1203022/design/bird.sv
+
+Module self-instances :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME            
+ 52.67  51.40  43.90  38.07  80.00  50.00 bird_tb_top.dut 
+
+
+
+-------------------------------------------------------------------------------
+Line Coverage for Module : bird
+
+             Line No.   Total   Covered  Percent
+TOTAL                      179       92    51.40
+ROUTINE            48        1        1   100.00
+ROUTINE            56       19       14    73.68
+ROUTINE            84        8        0     0.00
+ROUTINE           100        8        0     0.00
+ALWAYS            118        1        1   100.00
+ALWAYS            129       13       12    92.31
+ROUTINE           160        6        6   100.00
+ROUTINE           171        3        0     0.00
+ROUTINE           179        6        0     0.00
+ROUTINE           192       11        0     0.00
+ALWAYS            239      103       58    56.31
+
+47                        task automatic inc_drop_cnt();
+48         1/1              drop_cnt <= drop_cnt + 16'd1;
+49                        endtask
+50                      
+51                        // ----------------------------
+52                        // cfg validity (per latest rules)
+53                        // ----------------------------
+54                        function automatic bit cfg_invalid(input logic [31:0] c);
+55                          bit inv;
+56         1/1              inv = 0;
+57                      
+58                          // Reserved bits must be 0
+59         2/2              if (c[7:1]   != 7'd0) inv = 1;
+                        MISSING_ELSE
+60         1/2     ==>      if (c[23:21] != 3'd0) inv = 1;
+                        MISSING_ELSE
+61         1/2     ==>      if (c[31:29] != 3'd0) inv = 1;
+                        MISSING_ELSE
+62                      
+63                          // PAYLOAD_LEN must be 1..255 (0 invalid)
+64         1/2     ==>      if (c[15:8] == 8'd0) inv = 1;
+                        MISSING_ELSE
+65                      
+66         1/1              if (c[0] == 1'b0) begin
+67                            // LOCAL: must be SEQ_NUM==1 and FRAG_NUM==1
+68         1/2     ==>        if (c[28:24] != 5'd1) inv = 1;
+                        MISSING_ELSE
+69         2/2                if (c[20:16] != 5'd1) inv = 1;
+                        MISSING_ELSE
+70                          end else begin
+71                            // REMOTE: SEQ_NUM and FRAG_NUM must be non-zero
+72         2/2                if (c[28:24] == 5'd0) inv = 1;
+                        MISSING_ELSE
+73         1/2     ==>        if (c[20:16] == 5'd0) inv = 1;
+                        MISSING_ELSE
+74                          end
+75                      
+76         1/1              return inv;
+77                        endfunction
+78                      
+79                        // ----------------------------
+80                        // CRC16-CCITT (poly 0x1021, init 0xFFFF) over byte queue
+81                        // ----------------------------
+82                        function automatic logic [15:0] crc16_ccitt_bytes(input u8_t bytes[$]);
+83                          logic [15:0] crc;
+84         0/1     ==>      crc = 16'hFFFF;
+85         0/1     ==>      foreach (bytes[i]) begin
+86         0/1     ==>        crc ^= {bytes[i], 8'h00};
+87         0/1     ==>        for (int b = 0; b < 8; b++) begin
+88         0/2     ==>          if (crc[15]) crc = (crc << 1) ^ 16'h1021;
+89         0/1     ==>          else         crc = (crc << 1);
+90                            end
+91                          end
+92         0/1     ==>      return crc;
+93                        endfunction
+94                      
+95                        // ----------------------------
+96                        // Pack bytes into 32-bit words (little-endian within word)
+97                        // ----------------------------
+98                        function automatic void pack_bytes_to_words(input u8_t bytes[$], inout logic [31:0] wq[$]);
+99                          int i;
+100        0/1     ==>      i = 0;
+101        0/1     ==>      while (i < bytes.size()) begin
+102                           logic [31:0] w;
+103        0/1     ==>        w = 32'h0;
+104        0/1     ==>        for (int k = 0; k < 4; k++) begin
+105        0/1     ==>          if (i < bytes.size()) begin
+106        0/1     ==>            w[8*k +: 8] = bytes[i];
+107        0/1     ==>            i++;
+108                             end
+                   ==>  MISSING_ELSE
+109                           end
+110        0/1     ==>        wq.push_back(w);
+111                         end
+112                        endfunction
+113                     
+114                       // ----------------------------
+115                       // Input ready (behavioral model is always ready)
+116                       // ----------------------------
+117                       always_comb begin
+118        1/1              in_rdy = 1'b1;
+119                       end
+120                     
+121                       // ----------------------------
+122                       // Output queues (hold stable under backpressure by not popping)
+123                       // ----------------------------
+124                       u8_t         local_q[$];
+125                       logic [31:0] remote_wq[$];
+126                     
+127                       // Drive outputs + pop on handshake
+128                       always_ff @(posedge clk or negedge rst_n) begin
+129        1/1              if (!rst_n) begin
+130        1/1                local_vld  <= 1'b0;
+131        1/1                data_local <= 8'h00;
+132                     
+133        1/1                remote_vld  <= 1'b0;
+134        1/1                data_remote <= 32'h0;
+135                         end else begin
+136        1/1                local_vld  = (local_q.size() != 0);
+137        1/1                data_local = (local_q.size() != 0) ? local_q[0] : 8'h00;
+138        1/1                if (local_vld && local_rdy) begin
+139        1/1                  void'(local_q.pop_front());
+140                           end
+                        MISSING_ELSE
+141                     
+142        1/1                remote_vld  <= (remote_wq.size() != 0);
+143        1/1                data_remote <= (remote_wq.size() != 0) ? remote_wq[0] : 32'h0;
+144        1/1                if (remote_vld && remote_rdy) begin
+145        0/1     ==>          void'(remote_wq.pop_front());
+146                           end
+                        MISSING_ELSE
+147                         end
+148                       end
+149                     
+150                       // ============================================================
+151                       // Remote accumulation state (one packet at a time)
+152                       // ============================================================
+153                       bit          remote_active;
+154                       int unsigned active_seq;                 // 1..31 (packet identifier)
+155                       int unsigned active_max_frag;            // inferred N: max FRAG_NUM seen so far (1..31)
+156                       bit          frag_seen   [1:31];
+157                       u8_t         frag_payload[1:31][$];
+158                     
+159                       task automatic clear_remote_state();
+160        1/1              remote_active    = 0;
+161        1/1              active_seq       = 0;
+162        1/1              active_max_frag  = 0;
+163        1/1              for (int f = 1; f <= 31; f++) begin
+164        1/1                frag_seen[f] = 0;
+165        1/1                frag_payload[f].delete();
+166                         end
+167                       endtask
+168                     
+169                       task automatic drop_remote_packet_counted();
+170                         // Drop currently-accumulated remote packet (if any) and count it as one dropped packet.
+171        0/1     ==>      if (remote_active) begin
+172        0/1     ==>        inc_drop_cnt();
+173                         end
+                   ==>  MISSING_ELSE
+174        0/1     ==>      clear_remote_state();
+175                       endtask
+176                     
+177                       function automatic bit all_frags_ready(input int unsigned n);
+178                         bit ok;
+179        0/1     ==>      ok = 1;
+180        0/1     ==>      for (int f = 1; f <= 31; f++) begin
+181        0/1     ==>        if (f <= n) begin
+182        0/2     ==>          if (!frag_seen[f]) ok = 0;
+                   ==>  MISSING_ELSE
+183                           end
+                   ==>  MISSING_ELSE
+184                         end
+185        0/1     ==>      return ok;
+186                       endfunction
+187                     
+188                       task automatic build_and_queue_remote_output();
+189                         u8_t merged[$];
+190                         logic [15:0] crc;
+191                     
+192        0/1     ==>      merged.delete();
+193                     
+194                         // Merge in order 1..N; if missing any => drop packet
+195        0/1     ==>      for (int f = 1; f <= active_max_frag; f++) begin
+196        0/1     ==>        if (!frag_seen[f]) begin
+197        0/1     ==>          drop_remote_packet_counted();
+198        0/1     ==>          return;
+199                           end
+                   ==>  MISSING_ELSE
+200        0/2     ==>        foreach (frag_payload[f][i]) merged.push_back(frag_payload[f][i]);
+201                         end
+202                     
+203                         // Regenerate CRC over merged payload (cfg is not part of stream)
+204        0/1     ==>      crc = crc16_ccitt_bytes(merged);
+205                     
+206                         // Queue merged payload packed into 32-bit words, then CRC word
+207        0/1     ==>      pack_bytes_to_words(merged, remote_wq);
+208        0/1     ==>      remote_wq.push_back({16'h0000, crc});
+209                     
+210                         // Clear current remote packet state after queuing output (NOT a drop)
+211        0/1     ==>      clear_remote_state();
+212                       endtask
+213                     
+214                         // ============================================================
+215                         // RX fragment FSM
+216                         // ============================================================
+217                         typedef enum logic [1:0] {RX_IDLE, RX_PAYLOAD, RX_CRC} rx_state_e;
+218                         rx_state_e rx_st;
+219                     
+220                         // Latched at start-of-fragment (first payload byte)
+221                         bit          rx_is_remote;
+222                         bit          rx_drop;
+223                     
+224                         int unsigned rx_seq;       // SEQ_NUM (packet id) [28:24]
+225                         int unsigned rx_len;       // PAYLOAD_LEN [15:8]
+226                         int unsigned rx_frag;      // FRAG_NUM [20:16]
+227                     
+228                         // Counters for the remainder of the fragment AFTER consuming the first payload byte
+229                         int unsigned payload_left;  // remaining payload bytes after first byte
+230                         int unsigned crc_left;      // remaining CRC bytes (2)
+231                     
+232                         // Temporary capture for current remote fragment payload
+233                         u8_t cur_frag_payload[$];
+234                     
+235                         // ============================================================
+236                         // Main sequential behavior
+237                         // ============================================================
+238                         always_ff @(posedge clk or negedge rst_n) begin
+239        1/1                  if (!rst_n) begin
+240        1/1                      $display("ssssssssssssssssss state moved to idle");
+241        1/1                      rx_st <= RX_IDLE;
+242                     
+243        1/1                      local_q.delete();
+244        1/1                      remote_wq.delete();
+245        1/1                      cur_frag_payload.delete();
+246                     
+247        1/1                      drop_cnt <= 16'd0;
+248                     
+249        1/1                      clear_remote_state();
+250                     
+251                             end else begin
+252        1/1                  if (in_vld && in_rdy) begin
+253        1/1                      unique case (rx_st)
+254                     
+255                                     // ----------------------------------------------------
+256                                     // RX_IDLE: first payload byte of a fragment arrives here
+257                                     // cfg sampled in SAME cycle as first payload byte.
+258                                     // ----------------------------------------------------
+259                                     RX_IDLE: begin
+260        1/1                              rx_drop      = cfg_invalid(cfg);
+261        1/1                              rx_is_remote = cfg[0];
+262        1/1                              rx_len       = cfg[15:8];
+263        1/1                              rx_frag      = cfg[20:16];
+264        1/1                              rx_seq       = cfg[28:24];
+265                     
+266        1/1                              $display("==================== Delete cur_frag_payload =========== idle state now");
+267        1/1                              cur_frag_payload.delete();
+268                     
+269                                         // Consuming FIRST payload byte now; remaining payload bytes = PAYLOAD_LEN - 1
+270        1/1                              payload_left = (cfg[15:8] > 0) ? (cfg[15:8] - 1) : 0;
+271        1/1                              crc_left     = 2;
+272                     
+273                                         // If cfg invalid: count one dropped packet; consume bytes but do not forward/store
+274        1/1                              if (rx_drop) begin
+275        1/1                                  inc_drop_cnt();
+276        1/1                                  $display("rx_drop ..........................");
+277                     
+278                                             // If this is a remote fragment for the active packet, drop that active packet too
+279        1/1                                  if (cfg[0] == 1'b1 && remote_active && (cfg[28:24] == active_seq)) begin
+280        0/1     ==>                              drop_remote_packet_counted();
+281                                             end  
+                        MISSING_ELSE
+282                                         end else begin
+283                                             // Valid cfg: handle local vs remote
+284        1/1                                  if (!rx_is_remote) begin
+285                                                 // LOCAL valid (SEQ_NUM==1 and FRAG_NUM==1): forward first payload byte
+286        1/1                                      $display("push new local pkt first byte %0h",data_in );
+287        1/1                                      local_q.push_back(data_in);
+288                                             end else begin
+289                                                 // REMOTE valid
+290        1/1                                      if (!remote_active) begin
+291                                                     // Start a new remote packet only when FRAG_NUM==1
+292                                                     // if (rx_frag == 1) begi
+293        1/1                                        if (rx_seq <= rx_frag) begin
+294        0/1     ==>                                      remote_active   = 1;
+295        0/1     ==>                                      active_seq      = rx_seq;
+296        0/1     ==>                                      active_max_frag = 0;
+297        0/1     ==>                                      for (int f = 1; f <= 31; f++) begin
+298        0/1     ==>                                          frag_seen[f] = 0;
+299        0/1     ==>                                          frag_payload[f].delete();
+300                                                         end
+301        0/1     ==>                                      $display("====================0 Adding data %0h",data_in);
+302        0/1     ==>                                      cur_frag_payload.push_back(data_in);
+303                                                     end else begin
+304                                                         // Remote fragment without active packet start => drop packet
+305        1/1                                              inc_drop_cnt();
+306                                                     end
+307                                                 end else begin
+308                                                     // Active packet exists
+309        0/1     ==>                                  $display("rx seq %0d, active seq %0d", rx_seq, active_seq);
+310                                                     //if (rx_seq != active_seq) begin
+311        0/1     ==>                                  if (rx_seq > rx_frag) begin
+312                                                         // Mismatched SEQ while accumulating => drop current packet
+313        0/1     ==>                                      drop_remote_packet_counted();
+314                     
+315                                                         // Start new only if incoming fragment is FRAG_NUM==1
+316                                                         //if (rx_frag == 1) begin
+317        0/1     ==>                                      if (rx_seq == 1) begin
+318        0/1     ==>                                          remote_active   = 1;
+319        0/1     ==>                                          active_seq      = rx_seq;
+320        0/1     ==>                                          active_max_frag = 0;
+321        0/1     ==>                                          for (int f = 1; f <= 31; f++) begin
+322        0/1     ==>                                              frag_seen[f] = 0;
+323        0/1     ==>                                              frag_payload[f].delete();
+324                                                             end
+325        0/1     ==>                                          $display("====================1 Adding data %0h",data_in);
+326        0/1     ==>                                          cur_frag_payload.push_back(data_in);
+327                                                         end else begin
+328                                                             // Otherwise drop incoming packet too
+329        0/1     ==>                                          inc_drop_cnt();
+330                                                         end
+331                                                     end else begin
+332                                                         // Same SEQ as active: accept payload
+333        0/1     ==>                                      $display("====================2 Adding data %0h",data_in);
+334        0/1     ==>                                      cur_frag_payload.push_back(data_in);
+335                                                     end
+336                                                 end
+337                                             end
+338                                         end
+339                     
+340                                         // Next state
+341        1/1                              if (((cfg[15:8] > 0) ? (cfg[15:8] - 1) : 0) == 0) begin
+342        1/1                                  $display("ssssssssssssssssss state moved to crc");
+343        1/1                                  rx_st <= RX_CRC;
+344                                         end else begin
+345        1/1                                  $display("ssssssssssssssssss state moved to payload");
+346        1/1                                  rx_st <= RX_PAYLOAD;
+347                                         end
+348                                     
+349                                     end
+350                     
+351                                     // ----------------------------------------------------
+352                                     // RX_PAYLOAD: remaining payload bytes
+353                                     // ----------------------------------------------------
+354                                     RX_PAYLOAD: begin
+355        1/1                              rx_drop      = cfg_invalid(cfg);
+356        1/1                            if ( (!rx_is_remote && remote_active) ||  (rx_is_remote && !remote_active) ) begin
+357        0/1     ==>                           rx_drop =1;
+358        0/1     ==>                      $display("Dropppppppppppppppppppppppppppp");
+359                                       end
+                        MISSING_ELSE
+360        1/1                              if (!rx_drop) begin
+361        1/1                                  if (!rx_is_remote) begin
+362                                                 // Local: forward payload bytes
+363        1/1                                      $display("push payload byte %0h",data_in );
+364        1/1                                      local_q.push_back(data_in);
+365                                             end else begin
+366                                                 // Remote: only keep collecting if active context matches rx_seq
+367        0/1     ==>                              if (remote_active && (rx_seq <= rx_frag)) begin
+368        0/1     ==>                                  $display("%t ====================3 Adding data %0h",$time,data_in);
+369        0/1     ==>                                  cur_frag_payload.push_back(data_in);
+370                                                 end
+                   ==>  MISSING_ELSE
+371                                             end
+372                                         end
+                   ==>  MISSING_ELSE
+373                     
+374        2/2                              if (payload_left > 0) payload_left <= payload_left - 1;
+                   ==>  MISSING_ELSE
+375                     
+376                                         // After consuming the last remaining payload byte, move to CRC
+377        1/1                              if (payload_left == 3) begin
+378                                             //$display("ssssssssssssssssss state moved to crc");
+379        1/1                                  rx_st <= RX_CRC;
+380                                         end
+                   ==>  MISSING_ELSE
+381                                         
+382                                     end
+383                     
+384                                     // ----------------------------------------------------
+385                                     // RX_CRC: consume exactly 2 CRC bytes (not checked)
+386                                     // Local: forward CRC bytes unchanged on the local stream.
+387                                     // ----------------------------------------------------
+388                                     RX_CRC: begin
+389        1/1                              $display("%t .........................crc_left %0d  entered state moved to crc %0h",$time, crc_left, data_in);
+390        2/2                              if (crc_left > 0) crc_left <= crc_left - 1;
+                   ==>  MISSING_ELSE
+391                     
+392                                         // Forward CRC bytes to local output only (if not dropped)
+393        1/1                              if (!rx_drop && !rx_is_remote) begin
+394        1/1                                  $display("push crc byte %0h",data_in );
+395        1/1                                  local_q.push_back(data_in);
+396                                         end
+                        MISSING_ELSE
+397                     
+398                                         // End-of-fragment on the second CRC byte
+399        1/1                              if (crc_left == 1) begin
+400        1/1                                  if (!rx_drop && rx_is_remote) begin
+401        1/1                                      $display("no drop and is remote");
+402                                                 // Commit remote fragment payload if active and SEQ matches
+403        1/1                                      if (!(remote_active && (rx_seq <= rx_frag))) begin
+404                                                     // Remote fragment without valid active context => drop packet
+405        1/1                                          $display("inc_drop_cnt rx_seq %0d active_seq %0d", rx_seq, active_seq);
+406        1/1                                          inc_drop_cnt();
+407                                                 end else begin
+408                                                     // rx_frag is guaranteed non-zero by cfg_invalid() for remote
+409                                                     //if (rx_frag < 1 || rx_frag > 31) begin
+410        0/1     ==>                                  if (rx_seq < 1 || rx_seq > rx_frag) begin
+411        0/1     ==>                                      drop_remote_packet_counted();
+412                                                     end else begin
+413        0/1     ==>                                      $display("payload ready ........");
+414                                                         //frag_seen[rx_frag] = 1;
+415                                                         //frag_payload[rx_frag].delete();
+416        0/1     ==>                                      frag_seen[rx_seq] = 1;
+417        0/1     ==>                                      frag_payload[rx_seq].delete();
+418                                                         //foreach (cur_frag_payload[i]) frag_payload[rx_frag].push_back(cur_frag_payload[i]);
+419                                                         
+420        0/1     ==>                                      foreach (cur_frag_payload[i]) begin
+421        0/1     ==>                                          $display ("push back to frag_payload %0h",cur_frag_payload[i] );
+422        0/1     ==>                                          frag_payload[rx_seq].push_back(cur_frag_payload[i]);
+423                                                         end
+424                     
+425                                                         // Infer N as max FRAG_NUM seen so far
+426        0/1     ==>                                      $display("check if frag done");
+427        0/2     ==>                                      if (rx_frag > active_max_frag) active_max_frag = rx_frag;
+                   ==>  MISSING_ELSE
+428        0/2     ==>                                      if (rx_seq > active_max_frag) active_max_frag = rx_seq;
+                   ==>  MISSING_ELSE
+429                     
+430                                                         // If we now have all fragments 1..N, build output
+431        0/1     ==>                                      if (all_frags_ready(active_max_frag)) begin
+432        0/1     ==>                                          build_and_queue_remote_output();
+433                                                         end
+                   ==>  MISSING_ELSE
+434                                                     end
+435                                                 end
+436                                             end
+                        MISSING_ELSE
+437                     
+438                                             // Ready for next fragment
+439        1/1                                  $display("ssssssssssssssssss state moved to idle");
+440        1/1                                  rx_st <= RX_IDLE;
+441                                         end
+                        MISSING_ELSE
+442                                     end
+443                     
+444        0/1     ==>                  default: rx_st <= RX_IDLE;
+445                     
+446                                 endcase
+447                             end
+                        MISSING_ELSE
+
+-------------------------------------------------------------------------------
+Cond Coverage for Module : bird
+
+               Total   Covered  Percent
+Conditions         41       18    43.90
+Logical            41       18    43.90
+Non-Logical         0        0
+Event               0        0
+
+ LINE       138
+ EXPRESSION (local_vld && local_rdy)
+             ----1----    ----2----
+
+-1- -2- Status
+ 0   1  Covered
+ 1   0  Covered
+ 1   1  Covered
+
+ LINE       144
+ EXPRESSION (remote_vld && remote_rdy)
+             -----1----    -----2----
+
+-1- -2- Status
+ 0   1  Covered
+ 1   0  Not Covered
+ 1   1  Not Covered
+
+ LINE       252
+ EXPRESSION (in_vld && in_rdy)
+             ---1--    ---2--
+
+-1- -2- Status
+ 0   1  Covered
+ 1   0  Not Covered
+ 1   1  Covered
+
+ LINE       270
+ EXPRESSION ((cfg[15:8] > 8'b0) ? ((cfg[15:8] - 1)) : 0)
+             ---------1--------
+
+-1- Status
+ 0  Not Covered
+ 1  Covered
+
+ LINE       279
+ EXPRESSION ((cfg[0] == 1'b1) && remote_active && (cfg[28:24] == active_seq))
+             --------1-------    ------2------    -------------3------------
+
+-1- -2- -3- Status
+ 0   1   1  Not Covered
+ 1   0   1  Covered
+ 1   1   0  Not Covered
+ 1   1   1  Not Covered
+
+ LINE       356
+ EXPRESSION ((((!rx_is_remote)) && remote_active) || (rx_is_remote && ((!remote_active))))
+             ------------------1-----------------    ------------------2-----------------
+
+-1- -2- Status
+ 0   0  Covered
+ 0   1  Not Covered
+ 1   0  Not Covered
+
+ LINE       356
+ SUB-EXPRESSION (((!rx_is_remote)) && remote_active)
+                 --------1--------    ------2------
+
+-1- -2- Status
+ 0   1  Not Covered
+ 1   0  Covered
+ 1   1  Not Covered
+
+ LINE       356
+ SUB-EXPRESSION (rx_is_remote && ((!remote_active)))
+                 ------1-----    ---------2--------
+
+-1- -2- Status
+ 0   1  Covered
+ 1   0  Not Covered
+ 1   1  Not Covered
+
+ LINE       367
+ EXPRESSION (remote_active && (rx_seq <= rx_frag))
+             ------1------    ---------2---------
+
+-1- -2- Status
+ 0   1  Not Covered
+ 1   0  Not Covered
+ 1   1  Not Covered
+
+ LINE       393
+ EXPRESSION (((!rx_drop)) && ((!rx_is_remote)))
+             ------1-----    --------2--------
+
+-1- -2- Status
+ 0   1  Covered
+ 1   0  Covered
+ 1   1  Covered
+
+ LINE       400
+ EXPRESSION (((!rx_drop)) && rx_is_remote)
+             ------1-----    ------2-----
+
+-1- -2- Status
+ 0   1  Covered
+ 1   0  Covered
+ 1   1  Covered
+
+ LINE       403
+ EXPRESSION ( ! (remote_active && (rx_seq <= rx_frag)) )
+                -------------------1------------------
+
+-1- Status
+ 0  Covered
+ 1  Not Covered
+
+ LINE       403
+ SUB-EXPRESSION (remote_active && (rx_seq <= rx_frag))
+                 ------1------    ---------2---------
+
+-1- -2- Status
+ 0   1  Not Covered
+ 1   0  Not Covered
+ 1   1  Not Covered
+
+ LINE       410
+ EXPRESSION ((rx_seq < 1) || (rx_seq > rx_frag))
+             ------1-----    ---------2--------
+
+-1- -2- Status
+ 0   0  Not Covered
+ 0   1  Not Covered
+ 1   0  Not Covered
+
+-------------------------------------------------------------------------------
+Toggle Coverage for Module : bird
+                Total Covered Percent 
+Totals          17    9       52.94   
+Total Bits      218   83      38.07   
+Total Bits 0->1 109   43      39.45   
+Total Bits 1->0 109   40      36.70   
+
+                             
+Ports          13  8  61.54  
+Port Bits      208 77 37.02  
+Port Bits 0->1 104 39 37.50  
+Port Bits 1->0 104 38 36.54  
+
+                             
+Signals          4  1 25.00  
+Signal Bits      10 6 60.00  
+Signal Bits 0->1 5  4 80.00  
+Signal Bits 1->0 5  2 40.00  
+
+Port Details
+                  Toggle Toggle 1->0 Toggle 0->1 Direction 
+clk               Yes    Yes         Yes         INPUT     
+rst_n             Yes    Yes         Yes         INPUT     
+in_vld            Yes    Yes         Yes         INPUT     
+in_rdy            No     No          No          OUTPUT    
+data_in[7:0]      Yes    Yes         Yes         INPUT     
+cfg[8:0]          Yes    Yes         Yes         INPUT     
+cfg[9]            No     No          No          INPUT     
+cfg[10]           Yes    Yes         Yes         INPUT     
+cfg[15:11]        No     No          No          INPUT     
+cfg[17:16]        Yes    Yes         Yes         INPUT     
+cfg[23:18]        No     No          No          INPUT     
+cfg[25:24]        Yes    Yes         Yes         INPUT     
+cfg[31:26]        No     No          No          INPUT     
+drop_cnt[1:0]     Yes    Yes         Yes         OUTPUT    
+drop_cnt[2]       No     No          Yes         OUTPUT    
+drop_cnt[15:3]    No     No          No          OUTPUT    
+local_vld         Yes    Yes         Yes         OUTPUT    
+local_rdy         Yes    Yes         Yes         INPUT     
+data_local[7:0]   Yes    Yes         Yes         OUTPUT    
+remote_vld        No     No          No          OUTPUT    
+remote_rdy        Yes    Yes         Yes         INPUT     
+data_remote[31:0] No     No          No          OUTPUT    
+
+Signal Details
+              Toggle Toggle 1->0 Toggle 0->1 
+remote_active No     No          No          
+rx_st[1:0]    Yes    Yes         Yes         
+rx_is_remote  No     No          Yes         
+rx_drop       No     No          Yes         
+
+
+-------------------------------------------------------------------------------
+FSM Coverage for Module : bird
+Summary for FSM :: rx_st
+            Total Covered Percent                         
+States      3     3       100.00  (Not included in score) 
+Transitions 5     4       80.00                           
+Sequences   0     0                                       
+
+State, Transition and Sequence Details for FSM :: rx_st
+-------------------------------------------------------------------------------
+states     Line No. Covered 
+RX_CRC     343      Covered 
+RX_IDLE    241      Covered 
+RX_PAYLOAD 346      Covered 
+
+transitions         Line No. Covered     
+RX_CRC->RX_IDLE     241      Covered     
+RX_IDLE->RX_CRC     343      Covered     
+RX_IDLE->RX_PAYLOAD 346      Covered     
+RX_PAYLOAD->RX_CRC  379      Covered     
+RX_PAYLOAD->RX_IDLE 241      Not Covered 
+
+
+-------------------------------------------------------------------------------
+Branch Coverage for Module : bird
+         Line No. Total Covered Percent 
+Branches          44    22      50.00   
+IF       129      5     4       80.00   
+IF       239      39    18      46.15   
+
+
+129            if (!rst_n) begin
+               -1-  
+130              local_vld  <= 1'b0;
+                 ==>
+131              data_local <= 8'h00;
+132        
+133              remote_vld  <= 1'b0;
+134              data_remote <= 32'h0;
+135            end else begin
+136              local_vld  = (local_q.size() != 0);
+137              data_local = (local_q.size() != 0) ? local_q[0] : 8'h00;
+138              if (local_vld && local_rdy) begin
+                 -2-  
+139                void'(local_q.pop_front());
+                   ==>
+140              end
+                 MISSING_ELSE
+                 ==>
+141        
+142              remote_vld  <= (remote_wq.size() != 0);
+143              data_remote <= (remote_wq.size() != 0) ? remote_wq[0] : 32'h0;
+144              if (remote_vld && remote_rdy) begin
+                 -3-  
+145                void'(remote_wq.pop_front());
+                   ==>
+146              end
+                 MISSING_ELSE
+                 ==>
+
+Branches:
+
+-1- -2- -3- Status      
+1   -   -   Covered     
+0   1   -   Covered     
+0   0   -   Covered     
+0   -   1   Not Covered 
+0   -   0   Covered     
+
+
+239                if (!rst_n) begin
+                   -1-  
+240                    $display("ssssssssssssssssss state moved to idle");
+                       ==>
+241                    rx_st <= RX_IDLE;
+242        
+243                    local_q.delete();
+244                    remote_wq.delete();
+245                    cur_frag_payload.delete();
+246        
+247                    drop_cnt <= 16'd0;
+248        
+249                    clear_remote_state();
+250        
+251                end else begin
+252                if (in_vld && in_rdy) begin
+                   -2-  
+253                    unique case (rx_st)
+                              -3-  
+254        
+255                        // ----------------------------------------------------
+256                        // RX_IDLE: first payload byte of a fragment arrives here
+257                        // cfg sampled in SAME cycle as first payload byte.
+258                        // ----------------------------------------------------
+259                        RX_IDLE: begin
+260                            rx_drop      = cfg_invalid(cfg);
+261                            rx_is_remote = cfg[0];
+262                            rx_len       = cfg[15:8];
+263                            rx_frag      = cfg[20:16];
+264                            rx_seq       = cfg[28:24];
+265        
+266                            $display("==================== Delete cur_frag_payload =========== idle state now");
+267                            cur_frag_payload.delete();
+268        
+269                            // Consuming FIRST payload byte now; remaining payload bytes = PAYLOAD_LEN - 1
+270                            payload_left = (cfg[15:8] > 0) ? (cfg[15:8] - 1) : 0;
+                                                              -4-  
+                                                              ==>  
+                                                              ==>  
+271                            crc_left     = 2;
+272        
+273                            // If cfg invalid: count one dropped packet; consume bytes but do not forward/store
+274                            if (rx_drop) begin
+                               -5-  
+275                                inc_drop_cnt();
+276                                $display("rx_drop ..........................");
+277        
+278                                // If this is a remote fragment for the active packet, drop that active packet too
+279                                if (cfg[0] == 1'b1 && remote_active && (cfg[28:24] == active_seq)) begin
+                                   -6-  
+280                                    drop_remote_packet_counted();
+                                       ==>
+281                                end  
+                                   MISSING_ELSE
+                                   ==>
+282                            end else begin
+283                                // Valid cfg: handle local vs remote
+284                                if (!rx_is_remote) begin
+                                   -7-  
+285                                    // LOCAL valid (SEQ_NUM==1 and FRAG_NUM==1): forward first payload byte
+286                                    $display("push new local pkt first byte %0h",data_in );
+                                       ==>
+287                                    local_q.push_back(data_in);
+288                                end else begin
+289                                    // REMOTE valid
+290                                    if (!remote_active) begin
+                                       -8-  
+291                                        // Start a new remote packet only when FRAG_NUM==1
+292                                        // if (rx_frag == 1) begi
+293                                      if (rx_seq <= rx_frag) begin
+                                         -9-  
+294                                            remote_active   = 1;
+                                               ==>
+295                                            active_seq      = rx_seq;
+296                                            active_max_frag = 0;
+297                                            for (int f = 1; f <= 31; f++) begin
+298                                                frag_seen[f] = 0;
+299                                                frag_payload[f].delete();
+300                                            end
+301                                            $display("====================0 Adding data %0h",data_in);
+302                                            cur_frag_payload.push_back(data_in);
+303                                        end else begin
+304                                            // Remote fragment without active packet start => drop packet
+305                                            inc_drop_cnt();
+                                               ==>
+306                                        end
+307                                    end else begin
+308                                        // Active packet exists
+309                                        $display("rx seq %0d, active seq %0d", rx_seq, active_seq);
+310                                        //if (rx_seq != active_seq) begin
+311                                        if (rx_seq > rx_frag) begin
+                                           -10-  
+312                                            // Mismatched SEQ while accumulating => drop current packet
+313                                            drop_remote_packet_counted();
+314        
+315                                            // Start new only if incoming fragment is FRAG_NUM==1
+316                                            //if (rx_frag == 1) begin
+317                                            if (rx_seq == 1) begin
+                                               -11-  
+318                                                remote_active   = 1;
+                                                   ==>
+319                                                active_seq      = rx_seq;
+320                                                active_max_frag = 0;
+321                                                for (int f = 1; f <= 31; f++) begin
+322                                                    frag_seen[f] = 0;
+323                                                    frag_payload[f].delete();
+324                                                end
+325                                                $display("====================1 Adding data %0h",data_in);
+326                                                cur_frag_payload.push_back(data_in);
+327                                            end else begin
+328                                                // Otherwise drop incoming packet too
+329                                                inc_drop_cnt();
+                                                   ==>
+330                                            end
+331                                        end else begin
+332                                            // Same SEQ as active: accept payload
+333                                            $display("====================2 Adding data %0h",data_in);
+                                               ==>
+334                                            cur_frag_payload.push_back(data_in);
+335                                        end
+336                                    end
+337                                end
+338                            end
+339        
+340                            // Next state
+341                            if (((cfg[15:8] > 0) ? (cfg[15:8] - 1) : 0) == 0) begin
+                               -12-  
+342                                $display("ssssssssssssssssss state moved to crc");
+                                   ==>
+343                                rx_st <= RX_CRC;
+344                            end else begin
+345                                $display("ssssssssssssssssss state moved to payload");
+                                   ==>
+346                                rx_st <= RX_PAYLOAD;
+347                            end
+348                        
+349                        end
+350        
+351                        // ----------------------------------------------------
+352                        // RX_PAYLOAD: remaining payload bytes
+353                        // ----------------------------------------------------
+354                        RX_PAYLOAD: begin
+355                            rx_drop      = cfg_invalid(cfg);
+356                          if ( (!rx_is_remote && remote_active) ||  (rx_is_remote && !remote_active) ) begin
+                             -13-  
+357                                 rx_drop =1;
+                                    ==>
+358                            $display("Dropppppppppppppppppppppppppppp");
+359                          end
+                             MISSING_ELSE
+                             ==>
+360                            if (!rx_drop) begin
+                               -14-  
+361                                if (!rx_is_remote) begin
+                                   -15-  
+362                                    // Local: forward payload bytes
+363                                    $display("push payload byte %0h",data_in );
+                                       ==>
+364                                    local_q.push_back(data_in);
+365                                end else begin
+366                                    // Remote: only keep collecting if active context matches rx_seq
+367                                    if (remote_active && (rx_seq <= rx_frag)) begin
+                                       -16-  
+368                                        $display("%t ====================3 Adding data %0h",$time,data_in);
+                                           ==>
+369                                        cur_frag_payload.push_back(data_in);
+370                                    end
+                                       MISSING_ELSE
+                                       ==>
+371                                end
+372                            end
+                               MISSING_ELSE
+                               ==>
+373        
+374                            if (payload_left > 0) payload_left <= payload_left - 1;
+                               -17-  
+                               ==>
+                               MISSING_ELSE
+                               ==>
+375        
+376                            // After consuming the last remaining payload byte, move to CRC
+377                            if (payload_left == 3) begin
+                               -18-  
+378                                //$display("ssssssssssssssssss state moved to crc");
+379                                rx_st <= RX_CRC;
+                                   ==>
+380                            end
+                               MISSING_ELSE
+                               ==>
+381                            
+382                        end
+383        
+384                        // ----------------------------------------------------
+385                        // RX_CRC: consume exactly 2 CRC bytes (not checked)
+386                        // Local: forward CRC bytes unchanged on the local stream.
+387                        // ----------------------------------------------------
+388                        RX_CRC: begin
+389                            $display("%t .........................crc_left %0d  entered state moved to crc %0h",$time, crc_left, data_in);
+390                            if (crc_left > 0) crc_left <= crc_left - 1;
+                               -19-  
+                               ==>
+                               MISSING_ELSE
+                               ==>
+391        
+392                            // Forward CRC bytes to local output only (if not dropped)
+393                            if (!rx_drop && !rx_is_remote) begin
+                               -20-  
+394                                $display("push crc byte %0h",data_in );
+                                   ==>
+395                                local_q.push_back(data_in);
+396                            end
+                               MISSING_ELSE
+                               ==>
+397        
+398                            // End-of-fragment on the second CRC byte
+399                            if (crc_left == 1) begin
+                               -21-  
+400                                if (!rx_drop && rx_is_remote) begin
+                                   -22-  
+401                                    $display("no drop and is remote");
+402                                    // Commit remote fragment payload if active and SEQ matches
+403                                    if (!(remote_active && (rx_seq <= rx_frag))) begin
+                                       -23-  
+404                                        // Remote fragment without valid active context => drop packet
+405                                        $display("inc_drop_cnt rx_seq %0d active_seq %0d", rx_seq, active_seq);
+                                           ==>
+406                                        inc_drop_cnt();
+407                                    end else begin
+408                                        // rx_frag is guaranteed non-zero by cfg_invalid() for remote
+409                                        //if (rx_frag < 1 || rx_frag > 31) begin
+410                                        if (rx_seq < 1 || rx_seq > rx_frag) begin
+                                           -24-  
+411                                            drop_remote_packet_counted();
+                                               ==>
+412                                        end else begin
+413                                            $display("payload ready ........");
+414                                            //frag_seen[rx_frag] = 1;
+415                                            //frag_payload[rx_frag].delete();
+416                                            frag_seen[rx_seq] = 1;
+417                                            frag_payload[rx_seq].delete();
+418                                            //foreach (cur_frag_payload[i]) frag_payload[rx_frag].push_back(cur_frag_payload[i]);
+419                                            
+420                                            foreach (cur_frag_payload[i]) begin
+421                                                $display ("push back to frag_payload %0h",cur_frag_payload[i] );
+422                                                frag_payload[rx_seq].push_back(cur_frag_payload[i]);
+423                                            end
+424        
+425                                            // Infer N as max FRAG_NUM seen so far
+426                                            $display("check if frag done");
+427                                            if (rx_frag > active_max_frag) active_max_frag = rx_frag;
+                                               -25-  
+                                               ==>
+                                               MISSING_ELSE
+                                               ==>
+428                                            if (rx_seq > active_max_frag) active_max_frag = rx_seq;
+                                               -26-  
+                                               ==>
+                                               MISSING_ELSE
+                                               ==>
+429        
+430                                            // If we now have all fragments 1..N, build output
+431                                            if (all_frags_ready(active_max_frag)) begin
+                                               -27-  
+432                                                build_and_queue_remote_output();
+                                                   ==>
+433                                            end
+                                               MISSING_ELSE
+                                               ==>
+434                                        end
+435                                    end
+436                                end
+                                   MISSING_ELSE
+                                   ==>
+437        
+438                                // Ready for next fragment
+439                                $display("ssssssssssssssssss state moved to idle");
+440                                rx_st <= RX_IDLE;
+441                            end
+                               MISSING_ELSE
+                               ==>
+442                        end
+443        
+444                        default: rx_st <= RX_IDLE;
+                           ==>
+445        
+446                    endcase
+447                end
+                   MISSING_ELSE
+                   ==>
+
+Branches:
+
+-1- -2- -3-         -4- -5- -6- -7- -8- -9- -10- -11- -12- -13- -14- -15- -16- -17- -18- -19- -20- -21- -22- -23- -24- -25- -26- -27- Status      
+1   -   -           -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_IDLE     1   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_IDLE     0   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_IDLE     -   1   1   -   -   -   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_IDLE     -   1   0   -   -   -   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_IDLE     -   0   -   1   -   -   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_IDLE     -   0   -   0   1   1   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_IDLE     -   0   -   0   1   0   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_IDLE     -   0   -   0   0   -   1    1    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_IDLE     -   0   -   0   0   -   1    0    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_IDLE     -   0   -   0   0   -   0    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_IDLE     -   -   -   -   -   -   -    -    1    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_IDLE     -   -   -   -   -   -   -    -    0    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    1    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    0    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    -    1    1    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    -    1    0    1    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    -    1    0    0    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    -    0    -    -    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    -    -    -    -    1    -    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    -    -    -    -    0    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    -    -    -    -    -    1    -    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_PAYLOAD  -   -   -   -   -   -   -    -    -    -    -    -    -    -    0    -    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    1    -    -    -    -    -    -    -    -    Covered     
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    0    -    -    -    -    -    -    -    -    Not Covered 
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    1    -    -    -    -    -    -    -    Covered     
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    0    -    -    -    -    -    -    -    Covered     
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    1    1    1    -    -    -    -    Covered     
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    1    1    0    1    -    -    -    Not Covered 
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    1    1    0    0    1    -    -    Not Covered 
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    1    1    0    0    0    -    -    Not Covered 
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    1    1    0    0    -    1    -    Not Covered 
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    1    1    0    0    -    0    -    Not Covered 
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    1    1    0    0    -    -    1    Not Covered 
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    1    1    0    0    -    -    0    Not Covered 
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    1    0    -    -    -    -    -    Covered     
+0   1   RX_CRC      -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    0    -    -    -    -    -    -    Covered     
+0   1   default     -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Not Covered 
+0   0   -           -   -   -   -   -   -   -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    Covered     
+
+
+-------------------------------------------------------------------------------
+===============================================================================
+Module Instance : bird_tb_top.dut
+===============================================================================
+
+Instance :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 52.67  51.40  43.90  38.07  80.00  50.00 
+
+
+Instance's subtree :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 52.67  51.40  43.90  38.07  80.00  50.00 
+
+
+Module : 
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME 
+ 52.67  51.40  43.90  38.07  80.00  50.00 bird 
+
+
+Parent : 
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME        
+ 88.89  88.89 --     100.00 --      77.78 bird_tb_top 
+
+
+Subtrees :
+
+
+no children
+----------------
+
+
+-------------------------------------------------------------------------------
+Since this is the module's only instance, the coverage report is the same as for the module.
+===============================================================================
+Module : bird_tb_top
+===============================================================================
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 88.89  88.89 --     100.00 --      77.78 
+
+Source File(s) : 
+
+/home/st74/BIRD_1203022/tb/bird_tb_top.sv
+
+Module self-instances :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME        
+ 88.89  88.89 --     100.00 --      77.78 bird_tb_top 
+
+
+
+-------------------------------------------------------------------------------
+Line Coverage for Module : bird_tb_top
+
+             Line No.   Total   Covered  Percent
+TOTAL                       45       40    88.89
+INITIAL            43        4        4   100.00
+INITIAL            48       11       11   100.00
+INITIAL            63        2        2   100.00
+INITIAL            68       28       23    82.14
+
+42                        initial begin
+43         1/1              clk = 1'b0;
+44         3/3              forever #5 clk = ~clk;
+45                        end
+46                      
+47                        initial begin
+48         1/1              bird_vif.rst_n      = 1'b0;
+49         1/1              bird_vif.in_vld     = 1'b0;
+50         1/1              bird_vif.data_in    = 8'h00;
+51         1/1              bird_vif.cfg        = 32'h0000_0000;
+52         1/1              bird_vif.local_rdy  = 1'b1;
+53         1/1              bird_vif.remote_rdy = 1'b1;
+54                      
+55         3/3              repeat (5) @(posedge clk);
+                        REPEAT_FALSE
+56                      
+57         1/1              bird_vif.rst_n = 1'b1;
+58                      
+59         1/1              $display("[TOP] Reset deasserted at time %0t", $time);
+60                        end
+61                      
+62                        initial begin
+63         1/1              env = new(bird_vif);
+64         1/1              env.start();
+65                        end
+66                      
+67                        initial begin
+68         1/1              if (!$value$plusargs("TEST=%s", testname)) begin
+69         0/1     ==>        testname = "smoke";
+70                          end
+                        MISSING_ELSE
+71                      
+72         2/2              wait (bird_vif.rst_n === 1'b1);
+73                      
+74         3/3              repeat (2) @(posedge clk);
+                        REPEAT_FALSE
+75                      
+76         1/1              $display("[TOP] Selected TEST=%s", testname);
+77                      
+78         1/1              case (testname)
+79                      
+80                            "smoke": begin
+81         1/1                  smoke_test = new(env);
+82         1/1                  smoke_test.run();
+83                            end
+84                      
+85                            "local": begin
+86         1/1                  local_test = new(env);
+87         1/1                  local_test.run();
+88                            end
+89                      
+90                            "remote": begin
+91         1/1                  remote_test = new(env);
+92         1/1                  remote_test.run();
+93                            end
+94                      
+95                            "invalid": begin
+96         1/1                  invalid_drop_test = new(env);
+97         1/1                  invalid_drop_test.run();
+98                            end
+99                      
+100                           "backpressure": begin
+101        1/1                  backpressure_test = new(env);
+102        1/1                  backpressure_test.run();
+103                           end
+104                     
+105                           "reset": begin
+106        1/1                  reset_test = new(env);
+107        1/1                  reset_test.run();
+108                           end
+109                     
+110                           default: begin
+111        0/1     ==>          $display("[TOP] Unknown TEST=%s", testname);
+112        0/1     ==>          $display("[TOP] Running smoke test instead.");
+113        0/1     ==>          smoke_test = new(env);
+114        0/1     ==>          smoke_test.run();
+115                           end
+116                     
+117                         endcase
+118                     
+119        2/2              #100;
+120        1/1              $finish;
+
+-------------------------------------------------------------------------------
+Toggle Coverage for Module : bird_tb_top
+                Total Covered Percent 
+Totals          1     1       100.00  
+Total Bits      2     2       100.00  
+Total Bits 0->1 1     1       100.00  
+Total Bits 1->0 1     1       100.00  
+
+                            
+Signals          1 1 100.00 
+Signal Bits      2 2 100.00 
+Signal Bits 0->1 1 1 100.00 
+Signal Bits 1->0 1 1 100.00 
+
+Signal Details
+    Toggle Toggle 1->0 Toggle 0->1 
+clk Yes    Yes         Yes         
+
+
+-------------------------------------------------------------------------------
+Branch Coverage for Module : bird_tb_top
+         Line No. Total Covered Percent 
+Branches          9     7       77.78   
+IF       68       2     1       50.00   
+CASE     78       7     6       85.71   
+
+
+68             if (!$value$plusargs("TEST=%s", testname)) begin
+               -1-  
+69               testname = "smoke";
+                 ==>
+70             end
+               MISSING_ELSE
+               ==>
+
+Branches:
+
+-1- Status      
+1   Not Covered 
+0   Covered     
+
+
+78             case (testname)
+               -1-  
+79         
+80               "smoke": begin
+81                 smoke_test = new(env);
+                   ==>
+82                 smoke_test.run();
+83               end
+84         
+85               "local": begin
+86                 local_test = new(env);
+                   ==>
+87                 local_test.run();
+88               end
+89         
+90               "remote": begin
+91                 remote_test = new(env);
+                   ==>
+92                 remote_test.run();
+93               end
+94         
+95               "invalid": begin
+96                 invalid_drop_test = new(env);
+                   ==>
+97                 invalid_drop_test.run();
+98               end
+99         
+100              "backpressure": begin
+101                backpressure_test = new(env);
+                   ==>
+102                backpressure_test.run();
+103              end
+104        
+105              "reset": begin
+106                reset_test = new(env);
+                   ==>
+107                reset_test.run();
+108              end
+109        
+110              default: begin
+111                $display("[TOP] Unknown TEST=%s", testname);
+                   ==>
+
+Branches:
+
+-1-             Status      
+"smoke"         Covered     
+"local"         Covered     
+"remote"        Covered     
+"invalid"       Covered     
+"backpressure"  Covered     
+"reset"         Covered     
+default         Not Covered 
+
+
+-------------------------------------------------------------------------------
+===============================================================================
+Module Instance : bird_tb_top
+===============================================================================
+
+Instance :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 88.89  88.89 --     100.00 --      77.78 
+
+
+Instance's subtree :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH 
+ 55.08  58.93  43.90  37.85  80.00  54.72 
+
+
+Module : 
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME        
+ 88.89  88.89 --     100.00 --      77.78 bird_tb_top 
+
+
+Parent : 
+
+none
+----------------
+
+
+Subtrees :
+
+SCORE  LINE   COND   TOGGLE FSM    BRANCH NAME     
+ 37.02 --     --      37.02 --     --     bird_vif 
+ 52.67  51.40  43.90  38.07  80.00  50.00 dut      
+
+
+
+-------------------------------------------------------------------------------
+Since this is the module's only instance, the coverage report is the same as for the module.
