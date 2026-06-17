@@ -1,0 +1,116 @@
+Command: /home/st61/BIRD_1210607/./simv +TEST=local -l local.log
+Chronologic VCS simulator copyright 1991-2022
+Contains Synopsys proprietary information.
+Compiler version T-2022.06-SP2_Full64; Runtime version T-2022.06-SP2_Full64;  Jun 17 16:43 2026
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+[TOP] Reset deasserted at time 45000
+[DRV] Driver started at time 45000
+[TOP] Selected TEST=local
+[TEST] Starting bird_local_test at 65000
+[LOCAL_SEQ] Sending local packet 0
+[LOCAL_SEQ] local_seq_pkt_0: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  crc=0xf3c1
+[LOCAL_SEQ] Sending local packet 1
+[LOCAL_SEQ] local_seq_pkt_1: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h11}  crc=0xe3e0
+[LOCAL_SEQ] Sending local packet 2
+[LOCAL_SEQ] local_seq_pkt_2: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h12}  crc=0xd383
+[DRV] Driving local_seq_pkt_0: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  crc=0xf3c1
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 10
+ssssssssssssssssss state moved to crc
+               85000 .........................crc_left 2  entered state moved to crc f3
+push crc byte f3
+               95000 .........................crc_left 1  entered state moved to crc c1
+push crc byte c1
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  input_crc=0xf3c1 time=75000..95000
+[LOCAL_MON] LOCAL_OUT: byte=0x10 drop_cnt=0 time=95000
+[SB] INPUT fragment 1: remote=0 cfg=0x01010100 len=1 frag=1 seq=1 crc=0xf3c1
+[SB] Expected LOCAL packet added: payload_len=1 total_expected_local_bytes=3
+[SB] Got LOCAL byte 1 = 0x10
+[DRV] Driving local_seq_pkt_1: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h11}  crc=0xe3e0
+[LOCAL_MON] LOCAL_OUT: byte=0xf3 drop_cnt=0 time=105000
+[SB] Got LOCAL byte 2 = 0xf3
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 11
+ssssssssssssssssss state moved to crc
+[LOCAL_MON] LOCAL_OUT: byte=0xc1 drop_cnt=0 time=115000
+[SB] Got LOCAL byte 3 = 0xc1
+              125000 .........................crc_left 2  entered state moved to crc e3
+push crc byte e3
+              135000 .........................crc_left 1  entered state moved to crc e0
+push crc byte e0
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h11}  input_crc=0xe3e0 time=115000..135000
+[LOCAL_MON] LOCAL_OUT: byte=0x11 drop_cnt=0 time=135000
+[SB] INPUT fragment 2: remote=0 cfg=0x01010100 len=1 frag=1 seq=1 crc=0xe3e0
+[SB] Expected LOCAL packet added: payload_len=1 total_expected_local_bytes=6
+[SB] Got LOCAL byte 4 = 0x11
+[DRV] Driving local_seq_pkt_2: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h12}  crc=0xd383
+[LOCAL_MON] LOCAL_OUT: byte=0xe3 drop_cnt=0 time=145000
+[SB] Got LOCAL byte 5 = 0xe3
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 12
+ssssssssssssssssss state moved to crc
+[LOCAL_MON] LOCAL_OUT: byte=0xe0 drop_cnt=0 time=155000
+[SB] Got LOCAL byte 6 = 0xe0
+              165000 .........................crc_left 2  entered state moved to crc d3
+push crc byte d3
+              175000 .........................crc_left 1  entered state moved to crc 83
+push crc byte 83
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h12}  input_crc=0xd383 time=155000..175000
+[LOCAL_MON] LOCAL_OUT: byte=0x12 drop_cnt=0 time=175000
+[SB] INPUT fragment 3: remote=0 cfg=0x01010100 len=1 frag=1 seq=1 crc=0xd383
+[SB] Expected LOCAL packet added: payload_len=1 total_expected_local_bytes=9
+[SB] Got LOCAL byte 7 = 0x12
+[LOCAL_MON] LOCAL_OUT: byte=0xd3 drop_cnt=0 time=185000
+[SB] Got LOCAL byte 8 = 0xd3
+[LOCAL_MON] LOCAL_OUT: byte=0x83 drop_cnt=0 time=195000
+[SB] Got LOCAL byte 9 = 0x83
+
+==================== BIRD SCOREBOARD REPORT ====================
+Input fragments observed      : 3
+Valid local fragments         : 3
+Valid remote fragments        : 0
+Invalid fragments expected drop: 0
+Expected drop count events    : 0
+
+Expected local bytes          : 9
+Observed local bytes          : 9
+Checked local bytes           : 9
+
+Expected remote words         : 0
+Observed remote words         : 0
+Checked remote words          : 0
+
+Warnings                      : 0
+Errors                        : 0
+SCOREBOARD RESULT             : PASS
+================================================================
+
+
+================ BIRD FUNCTIONAL COVERAGE REPORT ================
+Input samples      : 9
+Local samples      : 9
+Remote samples     : 0
+Drop samples       : 151
+Handshake samples  : 151
+cg_input coverage      = 23.75%
+cg_output coverage     = 41.67%
+cg_drop coverage       = 25.00%
+cg_handshake coverage  = 41.67%
+Total functional cov   = 33.02%
+=================================================================
+
+[TEST] Finished bird_local_test at 1555000
+$finish called from file "tb/bird_tb_top.sv", line 120.
+$finish at simulation time              1655000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 1655000 ps
+CPU Time:      0.350 seconds;       Data structure size:   0.1Mb
+Wed Jun 17 16:43:50 2026
