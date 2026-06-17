@@ -1,0 +1,92 @@
+Command: /home/st74/BIRD_1203022/./simv +TEST=reset -l sim_updated_reset.log
+Chronologic VCS simulator copyright 1991-2022
+Contains Synopsys proprietary information.
+Compiler version T-2022.06-SP2_Full64; Runtime version T-2022.06-SP2_Full64;  Jun 18 00:55 2026
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+[TOP] Reset deasserted at time 45000
+[DRV] Driver started at time 45000
+[TOP] Selected TEST=reset
+[TEST] Starting bird_reset_test at 65000
+[TEST] Send packet before reset
+[LOCAL_SEQ] Sending local packet 0
+[LOCAL_SEQ] local_seq_pkt_0: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  crc=0xf3c1
+[DRV] Driving local_seq_pkt_0: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  crc=0xf3c1
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 10
+ssssssssssssssssss state moved to crc
+               85000 .........................crc_left 2  entered state moved to crc f3
+push crc byte f3
+               95000 .........................crc_left 1  entered state moved to crc c1
+push crc byte c1
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  input_crc=0xf3c1 time=75000..95000
+[LOCAL_MON] LOCAL_OUT: byte=0x10 drop_cnt=0 time=95000
+[SB] Observed input fragment count = 1
+[SB] Observed local byte count = 1
+[LOCAL_MON] LOCAL_OUT: byte=0xf3 drop_cnt=0 time=105000
+[SB] Observed local byte count = 2
+[LOCAL_MON] LOCAL_OUT: byte=0xc1 drop_cnt=0 time=115000
+[SB] Observed local byte count = 3
+[RESET_SEQ] Applying reset at time 455000
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+[RESET_SEQ] Reset released at time 525000
+[TEST] Send packet after reset
+[LOCAL_SEQ] Sending local packet 0
+[LOCAL_SEQ] local_seq_pkt_0: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  crc=0xf3c1
+[DRV] Driving local_seq_pkt_0: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  crc=0xf3c1
+==================== Delete cur_frag_payload =========== idle state now
+push new local pkt first byte 10
+ssssssssssssssssss state moved to crc
+              545000 .........................crc_left 2  entered state moved to crc f3
+push crc byte f3
+              555000 .........................crc_left 1  entered state moved to crc c1
+push crc byte c1
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=0 len=1 frag=1 seq=1 cfg=0x01010100 payload='{'h10}  input_crc=0xf3c1 time=535000..555000
+[LOCAL_MON] LOCAL_OUT: byte=0x10 drop_cnt=0 time=555000
+[SB] Observed input fragment count = 2
+[SB] Observed local byte count = 4
+[LOCAL_MON] LOCAL_OUT: byte=0xf3 drop_cnt=0 time=565000
+[SB] Observed local byte count = 5
+[LOCAL_MON] LOCAL_OUT: byte=0xc1 drop_cnt=0 time=575000
+[SB] Observed local byte count = 6
+
+================ BIRD STARTER SCOREBOARD REPORT ================
+Input fragments observed : 2
+Local bytes observed     : 6
+Remote words observed    : 0
+NOTE: This is a starter scoreboard only.
+Next step: add real expected-vs-actual checking.
+================================================================
+
+
+================ BIRD FUNCTIONAL COVERAGE REPORT ================
+Input samples          : 6
+Local samples          : 6
+Remote samples         : 0
+Drop samples           : 142
+Handshake samples      : 142
+cg_input coverage      = 23.75%
+cg_output coverage     = 41.67%
+cg_drop coverage       = 25.00%
+cg_handshake coverage  = 41.67%
+Total functional cov   = 33.02%
+==================================================================
+
+[TEST] Finished bird_reset_test at 1515000
+$finish called from file "tb/bird_tb_top.sv", line 120.
+$finish at simulation time              1615000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 1615000 ps
+CPU Time:      0.380 seconds;       Data structure size:   0.0Mb
+Thu Jun 18 00:55:54 2026

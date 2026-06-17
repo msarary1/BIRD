@@ -1,0 +1,68 @@
+Command: /home/st74/BIRD_1203022/./simv +TEST=remote -l sim_updated_remote.log
+Chronologic VCS simulator copyright 1991-2022
+Contains Synopsys proprietary information.
+Compiler version T-2022.06-SP2_Full64; Runtime version T-2022.06-SP2_Full64;  Jun 18 00:55 2026
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+ssssssssssssssssss state moved to idle
+[TOP] Reset deasserted at time 45000
+[DRV] Driver started at time 45000
+[TOP] Selected TEST=remote
+[TEST] Starting bird_remote_test at 65000
+[REMOTE_SEQ] Sending remote fragment 1
+[REMOTE_SEQ] remote_frag_1: remote=1 len=1 frag=1 seq=3 cfg=0x03010101 payload='{'ha1}  crc=0x443b
+[REMOTE_SEQ] Sending remote fragment 2
+[REMOTE_SEQ] remote_frag_2: remote=1 len=1 frag=2 seq=3 cfg=0x03020101 payload='{'hb2}  crc=0x6669
+[DRV] Driving remote_frag_1: remote=1 len=1 frag=1 seq=3 cfg=0x03010101 payload='{'ha1}  crc=0x443b
+==================== Delete cur_frag_payload =========== idle state now
+ssssssssssssssssss state moved to crc
+               85000 .........................crc_left 2  entered state moved to crc 44
+               95000 .........................crc_left 1  entered state moved to crc 3b
+no drop and is remote
+inc_drop_cnt rx_seq 3 active_seq 0
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=1 len=1 frag=1 seq=3 cfg=0x03010101 payload='{'ha1}  input_crc=0x443b time=75000..95000
+[SB] Observed input fragment count = 1
+[DRV] Driving remote_frag_2: remote=1 len=1 frag=2 seq=3 cfg=0x03020101 payload='{'hb2}  crc=0x6669
+==================== Delete cur_frag_payload =========== idle state now
+ssssssssssssssssss state moved to crc
+              125000 .........................crc_left 2  entered state moved to crc 66
+              135000 .........................crc_left 1  entered state moved to crc 69
+no drop and is remote
+inc_drop_cnt rx_seq 3 active_seq 0
+ssssssssssssssssss state moved to idle
+[IN_MON] INPUT_FRAGMENT: remote=1 len=1 frag=2 seq=3 cfg=0x03020101 payload='{'hb2}  input_crc=0x6669 time=115000..135000
+[SB] Observed input fragment count = 2
+
+================ BIRD STARTER SCOREBOARD REPORT ================
+Input fragments observed : 2
+Local bytes observed     : 0
+Remote words observed    : 0
+NOTE: This is a starter scoreboard only.
+Next step: add real expected-vs-actual checking.
+================================================================
+
+
+================ BIRD FUNCTIONAL COVERAGE REPORT ================
+Input samples          : 6
+Local samples          : 0
+Remote samples         : 0
+Drop samples           : 201
+Handshake samples      : 201
+cg_input coverage      = 30.00%
+cg_output coverage     = 0.00%
+cg_drop coverage       = 50.00%
+cg_handshake coverage  = 33.33%
+Total functional cov   = 28.33%
+==================================================================
+
+[TEST] Finished bird_remote_test at 2055000
+$finish called from file "tb/bird_tb_top.sv", line 120.
+$finish at simulation time              2155000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 2155000 ps
+CPU Time:      0.360 seconds;       Data structure size:   0.0Mb
+Thu Jun 18 00:55:50 2026

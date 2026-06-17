@@ -17,7 +17,6 @@ class bird_coverage;
     int unsigned frag,
     int unsigned seq
   );
-
     option.per_instance = 1;
 
     cp_remote: coverpoint remote {
@@ -26,11 +25,11 @@ class bird_coverage;
     }
 
     cp_len: coverpoint len {
-      bins len_zero   = {0};
-      bins len_one    = {1};
-      bins len_small  = {[2:15]};
-      bins len_mid    = {[16:127]};
-      bins len_large  = {[128:255]};
+      bins len_zero  = {0};
+      bins len_one   = {1};
+      bins len_small = {[2:15]};
+      bins len_mid   = {[16:127]};
+      bins len_large = {[128:255]};
     }
 
     cp_frag: coverpoint frag {
@@ -47,17 +46,14 @@ class bird_coverage;
       bins seq_high = {[16:31]};
     }
 
-    cross_remote_len: cross cp_remote, cp_len;
-    cross_remote_frag: cross cp_remote, cp_frag;
-
+    cross_remote_len  : cross cp_remote, cp_len;
+    cross_remote_frag : cross cp_remote, cp_frag;
   endgroup
-
 
   covergroup cg_output with function sample(
     bit local_transfer,
     bit remote_transfer
   );
-
     option.per_instance = 1;
 
     cp_local_transfer: coverpoint local_transfer {
@@ -71,14 +67,9 @@ class bird_coverage;
     }
 
     cross_outputs: cross cp_local_transfer, cp_remote_transfer;
-
   endgroup
 
-
-  covergroup cg_drop with function sample(
-    bit [15:0] drop_cnt
-  );
-
+  covergroup cg_drop with function sample(bit [15:0] drop_cnt);
     option.per_instance = 1;
 
     cp_drop_cnt: coverpoint drop_cnt {
@@ -87,9 +78,7 @@ class bird_coverage;
       bins mid_drop  = {[16'd6:16'd100]};
       bins high_drop = {[16'd101:16'hFFFF]};
     }
-
   endgroup
-
 
   covergroup cg_handshake with function sample(
     bit in_vld,
@@ -99,7 +88,6 @@ class bird_coverage;
     bit remote_vld,
     bit remote_rdy
   );
-
     option.per_instance = 1;
 
     cp_input_hs: coverpoint {in_vld, in_rdy} {
@@ -122,9 +110,7 @@ class bird_coverage;
       bins wait_ready = {2'b10};
       bins transfer   = {2'b11};
     }
-
   endgroup
-
 
   function new(virtual bird_if vif);
     this.vif = vif;
@@ -141,7 +127,6 @@ class bird_coverage;
     cg_handshake = new();
   endfunction
 
-
   task run();
     fork
       sample_input();
@@ -151,17 +136,11 @@ class bird_coverage;
     join_none
   endtask
 
-
   task sample_input();
     forever begin
       @(vif.mon_cb);
-
-      if (vif.mon_cb.rst_n &&
-          vif.mon_cb.in_vld &&
-          vif.mon_cb.in_rdy) begin
-
+      if (vif.mon_cb.rst_n && vif.mon_cb.in_vld && vif.mon_cb.in_rdy) begin
         input_sample_count++;
-
         cg_input.sample(
           vif.mon_cb.cfg[0],
           vif.mon_cb.cfg[15:8],
@@ -172,13 +151,10 @@ class bird_coverage;
     end
   endtask
 
-
   task sample_outputs();
     forever begin
       @(vif.mon_cb);
-
       if (vif.mon_cb.rst_n) begin
-
         if (vif.mon_cb.local_vld && vif.mon_cb.local_rdy) begin
           local_sample_count++;
           cg_output.sample(1'b1, 1'b0);
@@ -188,16 +164,13 @@ class bird_coverage;
           remote_sample_count++;
           cg_output.sample(1'b0, 1'b1);
         end
-
       end
     end
   endtask
 
-
   task sample_drop_counter();
     forever begin
       @(vif.mon_cb);
-
       if (vif.mon_cb.rst_n) begin
         drop_sample_count++;
         cg_drop.sample(vif.mon_cb.drop_cnt);
@@ -205,14 +178,11 @@ class bird_coverage;
     end
   endtask
 
-
   task sample_handshakes();
     forever begin
       @(vif.mon_cb);
-
       if (vif.mon_cb.rst_n) begin
         handshake_sample_count++;
-
         cg_handshake.sample(
           vif.mon_cb.in_vld,
           vif.mon_cb.in_rdy,
@@ -225,15 +195,14 @@ class bird_coverage;
     end
   endtask
 
-
   function void report();
     $display("");
     $display("================ BIRD FUNCTIONAL COVERAGE REPORT ================");
-    $display("Input samples      : %0d", input_sample_count);
-    $display("Local samples      : %0d", local_sample_count);
-    $display("Remote samples     : %0d", remote_sample_count);
-    $display("Drop samples       : %0d", drop_sample_count);
-    $display("Handshake samples  : %0d", handshake_sample_count);
+    $display("Input samples          : %0d", input_sample_count);
+    $display("Local samples          : %0d", local_sample_count);
+    $display("Remote samples         : %0d", remote_sample_count);
+    $display("Drop samples           : %0d", drop_sample_count);
+    $display("Handshake samples      : %0d", handshake_sample_count);
     $display("cg_input coverage      = %0.2f%%", cg_input.get_coverage());
     $display("cg_output coverage     = %0.2f%%", cg_output.get_coverage());
     $display("cg_drop coverage       = %0.2f%%", cg_drop.get_coverage());
@@ -243,7 +212,7 @@ class bird_coverage;
             + cg_output.get_coverage()
             + cg_drop.get_coverage()
             + cg_handshake.get_coverage()) / 4.0);
-    $display("=================================================================");
+    $display("==================================================================");
     $display("");
   endfunction
 
