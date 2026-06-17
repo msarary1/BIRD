@@ -11,6 +11,7 @@ class bird_env;
 
   bird_agent      agent;
   bird_scoreboard scoreboard;
+  bird_coverage   coverage;
 
   function new(virtual bird_if vif);
     this.vif = vif;
@@ -19,20 +20,22 @@ class bird_env;
     local_mbx  = new();
     remote_mbx = new();
 
-    agent = new(vif, in_obs_mbx, local_mbx, remote_mbx);
+    agent      = new(vif, in_obs_mbx, local_mbx, remote_mbx);
     scoreboard = new(in_obs_mbx, local_mbx, remote_mbx);
+    coverage   = new(vif);
   endfunction
 
   task start();
     agent.start();
     scoreboard.run();
+    coverage.run();
   endtask
 
   task report();
     scoreboard.report();
+    coverage.report();
   endtask
 
 endclass
 
 `endif
-

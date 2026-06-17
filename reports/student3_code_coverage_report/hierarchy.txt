@@ -1,0 +1,12 @@
+Design Hierarchy
+
+
+----------------
+SCORE  LINE   COND   TOGGLE FSM    BRANCH             
+ 55.08  58.93  43.90  37.85  80.00  54.72 bird_tb_top 
+  
+  ----------------
+  SCORE  LINE   COND   TOGGLE FSM    BRANCH          
+   37.02 --     --      37.02 --     --     bird_vif 
+   52.67  51.40  43.90  38.07  80.00  50.00 dut      
+

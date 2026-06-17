@@ -15,6 +15,7 @@ package bird_pkg;
   `include "tb/bird_driver.sv"
   `include "tb/bird_monitor.sv"
   `include "tb/bird_scoreboard.sv"
+  `include "tb/bird_coverage.sv"
   `include "tb/bird_agent.sv"
   `include "tb/bird_env.sv"
 
