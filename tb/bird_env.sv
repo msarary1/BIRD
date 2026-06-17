@@ -9,8 +9,10 @@ class bird_env;
   mailbox #(bird_output_item)    local_mbx;
   mailbox #(bird_output_item)    remote_mbx;
 
-  bird_agent      agent;
-  bird_scoreboard scoreboard;
+  bird_agent            agent;
+  bird_scoreboard       scoreboard;
+  bird_coverage         coverage;
+  bird_protocol_checker protocol_checker;
 
   function new(virtual bird_if vif);
     this.vif = vif;
@@ -19,20 +21,25 @@ class bird_env;
     local_mbx  = new();
     remote_mbx = new();
 
-    agent = new(vif, in_obs_mbx, local_mbx, remote_mbx);
-    scoreboard = new(in_obs_mbx, local_mbx, remote_mbx);
+    agent            = new(vif, in_obs_mbx, local_mbx, remote_mbx);
+    scoreboard       = new(in_obs_mbx, local_mbx, remote_mbx, vif);
+    coverage         = new(vif);
+    protocol_checker = new(vif);
   endfunction
 
   task start();
     agent.start();
     scoreboard.run();
+    coverage.run();
+    protocol_checker.run();
   endtask
 
   task report();
     scoreboard.report();
+    coverage.report();
+    protocol_checker.report();
   endtask
 
 endclass
 
 `endif
-

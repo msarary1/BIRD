@@ -1,5 +1,4 @@
-`ifndef BiRD_DRIODVER_SV
-
+`ifndef BIRD_DRIVER_SV
 `define BIRD_DRIVER_SV
 
 class bird_driver;

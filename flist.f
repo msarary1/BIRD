@@ -1,5 +1,6 @@
 +incdir+.
 +incdir+tb
++incdir+seq
 +incdir+tests
 
 tb/bird_if.sv
