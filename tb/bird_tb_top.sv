@@ -29,7 +29,15 @@ module bird_tb_top;
   );
 
   bird_env env;
-  bird_smoke_test test;
+
+  string testname;
+
+  bird_smoke_test        smoke_test;
+  bird_local_test        local_test;
+  bird_remote_test       remote_test;
+  bird_invalid_drop_test invalid_drop_test;
+  bird_backpressure_test backpressure_test;
+  bird_reset_test        reset_test;
 
   initial begin
     clk = 1'b0;
@@ -57,15 +65,58 @@ module bird_tb_top;
   end
 
   initial begin
+    if (!$value$plusargs("TEST=%s", testname)) begin
+      testname = "smoke";
+    end
+
     wait (bird_vif.rst_n === 1'b1);
 
     repeat (2) @(posedge clk);
 
-    test = new(env);
-    test.run();
+    $display("[TOP] Selected TEST=%s", testname);
+
+    case (testname)
+
+      "smoke": begin
+        smoke_test = new(env);
+        smoke_test.run();
+      end
+
+      "local": begin
+        local_test = new(env);
+        local_test.run();
+      end
+
+      "remote": begin
+        remote_test = new(env);
+        remote_test.run();
+      end
+
+      "invalid": begin
+        invalid_drop_test = new(env);
+        invalid_drop_test.run();
+      end
+
+      "backpressure": begin
+        backpressure_test = new(env);
+        backpressure_test.run();
+      end
+
+      "reset": begin
+        reset_test = new(env);
+        reset_test.run();
+      end
+
+      default: begin
+        $display("[TOP] Unknown TEST=%s", testname);
+        $display("[TOP] Running smoke test instead.");
+        smoke_test = new(env);
+        smoke_test.run();
+      end
+
+    endcase
 
     #100;
-
     $finish;
   end
 
