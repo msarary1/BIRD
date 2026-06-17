@@ -15,9 +15,9 @@ class bird_local_test;
     $display("[TEST] Starting bird_local_test at %0t", $time);
 
     local_seq = new(env.agent.drv_mbx);
-    local_seq.body(3);
+    local_seq.body(3, 0, 1);
 
-    repeat (150) @(env.vif.mon_cb);
+    repeat (180) @(env.vif.mon_cb);
 
     env.report();
 

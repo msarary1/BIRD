@@ -1,0 +1,12 @@
+simv
+simv.daidir/
+csrc/
+ucli.key
+*.log
+*.vdb
+*.key
+DVEfiles/
+urgReport/
+reports/student2_fixed/*.log
+reports/student2_coverage/*.log
+reports/student2_coverage/code_coverage.vdb/

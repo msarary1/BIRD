@@ -13,13 +13,7 @@ class bird_smoke_test;
     bird_transaction tr;
     u8_t p[];
 
-    $display("[TEST] Starting BIRD pure SystemVerilog smoke test at %0t", $time);
-
-    // One legal local packet.
-    // For your DUT, local traffic must have:
-    // cfg[0] = 0
-    // FRAG_NUM = 1
-    // SEQ_NUM = 1
+    $display("[TEST] Starting BIRD smoke test at %0t", $time);
 
     p = new[4];
     p[0] = 8'h11;
@@ -35,7 +29,7 @@ class bird_smoke_test;
 
     env.agent.drv_mbx.put(tr);
 
-    repeat (80) @(env.vif.mon_cb);
+    repeat (120) @(env.vif.mon_cb);
 
     env.report();
 

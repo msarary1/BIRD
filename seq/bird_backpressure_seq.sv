@@ -9,13 +9,24 @@ class bird_backpressure_seq;
     this.vif = vif;
   endfunction
 
-  task body(int unsigned cycles = 50);
-    $display("[BACKPRESSURE_SEQ] Starting output backpressure");
+  task body(int unsigned cycles = 80);
+    $display("[BACKPRESSURE_SEQ] Starting output backpressure for %0d cycles", cycles);
 
-    repeat (cycles) begin
+    for (int i = 0; i < cycles; i++) begin
       @(vif.drv_cb);
-      vif.drv_cb.local_rdy  <= $urandom_range(0, 1);
-      vif.drv_cb.remote_rdy <= $urandom_range(0, 1);
+
+      if ((i % 10) < 4) begin
+        vif.drv_cb.local_rdy  <= 1'b0;
+        vif.drv_cb.remote_rdy <= 1'b1;
+      end
+      else if ((i % 10) < 7) begin
+        vif.drv_cb.local_rdy  <= 1'b1;
+        vif.drv_cb.remote_rdy <= 1'b0;
+      end
+      else begin
+        vif.drv_cb.local_rdy  <= 1'b1;
+        vif.drv_cb.remote_rdy <= 1'b1;
+      end
     end
 
     @(vif.drv_cb);

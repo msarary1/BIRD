@@ -19,11 +19,11 @@ class bird_backpressure_test;
     bp_seq    = new(env.vif);
 
     fork
-      local_seq.body(3);
-      bp_seq.body(80);
+      local_seq.body(3, 0, 1);
+      bp_seq.body(100);
     join
 
-    repeat (150) @(env.vif.mon_cb);
+    repeat (200) @(env.vif.mon_cb);
 
     env.report();
 

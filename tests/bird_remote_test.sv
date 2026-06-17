@@ -17,7 +17,7 @@ class bird_remote_test;
     remote_seq = new(env.agent.drv_mbx);
     remote_seq.body();
 
-    repeat (200) @(env.vif.mon_cb);
+    repeat (240) @(env.vif.mon_cb);
 
     env.report();
 

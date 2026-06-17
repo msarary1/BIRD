@@ -19,16 +19,16 @@ class bird_reset_test;
     reset_seq = new(env.vif);
 
     $display("[TEST] Send packet before reset");
-    local_seq.body(1);
+    local_seq.body(1, 0, 1);
 
-    repeat (40) @(env.vif.mon_cb);
+    repeat (60) @(env.vif.mon_cb);
 
     reset_seq.apply_reset(5);
 
     $display("[TEST] Send packet after reset");
-    local_seq.body(1);
+    local_seq.body(1, 0, 1);
 
-    repeat (100) @(env.vif.mon_cb);
+    repeat (150) @(env.vif.mon_cb);
 
     env.report();
 

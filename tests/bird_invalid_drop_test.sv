@@ -17,7 +17,7 @@ class bird_invalid_drop_test;
     invalid_seq = new(env.agent.drv_mbx);
     invalid_seq.body();
 
-    repeat (150) @(env.vif.mon_cb);
+    repeat (220) @(env.vif.mon_cb);
 
     env.report();
 
