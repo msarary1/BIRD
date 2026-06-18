@@ -1,0 +1,105 @@
+============================================================
+BIRD FRESH MAIN VERIFICATION SUMMARY
+============================================================
+Generated on: Fri Jun 19 00:43:29 IDT 2026
+Branch: main
+
+------------------------------------------------------------
+Compile Status
+------------------------------------------------------------
+Compile Status: PASS
+No compile errors found.
+
+------------------------------------------------------------
+Simulation Results
+------------------------------------------------------------
+
+Test log: sim_fresh_backpressure.log
+[TOP] Selected TEST = backpressure
+SCOREBOARD RESULT : FAIL
+PROTOCOL CHECKER RESULT : FAIL
+cg_input coverage          = 28.75%
+cg_output coverage         = 66.67%
+cg_drop coverage           = 25.00%
+cg_handshake coverage      = 66.67%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 47.42%
+
+Test log: sim_fresh_invalid.log
+[TOP] Selected TEST = invalid
+SCOREBOARD RESULT : PASS
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 61.67%
+cg_output coverage         = 41.67%
+cg_drop coverage           = 50.00%
+cg_handshake coverage      = 33.33%
+cg_drop_reason coverage    = 91.67%
+Total functional cov       = 55.67%
+
+Test log: sim_fresh_local.log
+[TOP] Selected TEST = local
+SCOREBOARD RESULT : PASS
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 28.75%
+cg_output coverage         = 66.67%
+cg_drop coverage           = 25.00%
+cg_handshake coverage      = 41.67%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 42.42%
+
+Test log: sim_fresh_remote.log
+[TOP] Selected TEST = remote
+SCOREBOARD RESULT : FAIL
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 30.00%
+cg_output coverage         = 41.67%
+cg_drop coverage           = 50.00%
+cg_handshake coverage      = 33.33%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 41.00%
+
+Test log: sim_fresh_remote_oo.log
+[TOP] Selected TEST = remote_oo
+SCOREBOARD RESULT : FAIL
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 30.00%
+cg_output coverage         = 41.67%
+cg_drop coverage           = 50.00%
+cg_handshake coverage      = 33.33%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 41.00%
+
+Test log: sim_fresh_reset.log
+[TOP] Selected TEST = reset
+SCOREBOARD RESULT : PASS
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 23.75%
+cg_output coverage         = 66.67%
+cg_drop coverage           = 25.00%
+cg_handshake coverage      = 41.67%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 41.42%
+
+Test log: sim_fresh_smoke.log
+[TOP] Selected TEST = smoke
+SCOREBOARD RESULT : PASS
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 23.75%
+cg_output coverage         = 66.67%
+cg_drop coverage           = 25.00%
+cg_handshake coverage      = 41.67%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 41.42%
+
+------------------------------------------------------------
+Final Error Scan
+------------------------------------------------------------
+Final Status: FAIL
+sim_fresh_backpressure.log:SCOREBOARD RESULT : FAIL
+sim_fresh_backpressure.log:PROTOCOL CHECKER RESULT : FAIL
+sim_fresh_remote.log:SCOREBOARD RESULT : FAIL
+sim_fresh_remote_oo.log:SCOREBOARD RESULT : FAIL
+
+============================================================
+END OF SUMMARY
+============================================================

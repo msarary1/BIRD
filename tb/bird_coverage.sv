@@ -11,6 +11,16 @@ class bird_coverage;
   int unsigned drop_sample_count;
   int unsigned handshake_sample_count;
 
+  // Used to sample cfg-based coverage only once per input fragment,
+  // not once for every payload/CRC byte.
+  int unsigned input_bytes_left;
+  int unsigned drop_reason_bytes_left;
+
+  // Small state model for remote SEQ mismatch coverage.
+  bit         cov_remote_active;
+  logic [4:0] cov_active_seq;
+
+
   covergroup cg_input with function sample(
     bit remote,
     int unsigned len,
@@ -116,14 +126,14 @@ class bird_coverage;
   endgroup
 
 
-  // Tracks which drop conditions have been exercised
+  // Tracks valid drop conditions from the official spec.
+  // Removed local_seq_not_one because local SEQ_NUM has no functional impact.
   covergroup cg_drop_reason with function sample(
     bit seq_zero,
     bit frag_zero,
     bit len_zero,
     bit reserved_nonzero,
     bit local_frag_not_one,
-    bit local_seq_not_one,
     bit remote_mismatch_seq
   );
     option.per_instance = 1;
@@ -153,11 +163,6 @@ class bird_coverage;
       bins no_hit = {0};
     }
 
-    cp_local_seq_bad: coverpoint local_seq_not_one {
-      bins hit    = {1};
-      bins no_hit = {0};
-    }
-
     cp_remote_mismatch: coverpoint remote_mismatch_seq {
       bins hit    = {1};
       bins no_hit = {0};
@@ -168,17 +173,28 @@ class bird_coverage;
   function new(virtual bird_if vif);
     this.vif = vif;
 
-    input_sample_count = 0;
-    local_sample_count = 0;
-    remote_sample_count = 0;
-    drop_sample_count = 0;
-    handshake_sample_count = 0;
+    input_sample_count      = 0;
+    local_sample_count      = 0;
+    remote_sample_count     = 0;
+    drop_sample_count       = 0;
+    handshake_sample_count  = 0;
+
+    input_bytes_left        = 0;
+    drop_reason_bytes_left  = 0;
+
+    clear_cov_remote_state();
 
     cg_input       = new();
     cg_output      = new();
     cg_drop        = new();
     cg_handshake   = new();
     cg_drop_reason = new();
+  endfunction
+
+
+  function void clear_cov_remote_state();
+    cov_remote_active = 0;
+    cov_active_seq    = 5'd0;
   endfunction
 
 
@@ -197,39 +213,55 @@ class bird_coverage;
     forever begin
       @(vif.mon_cb);
 
-      if (vif.mon_cb.rst_n &&
-          vif.mon_cb.in_vld &&
-          vif.mon_cb.in_rdy) begin
+      if (!vif.mon_cb.rst_n) begin
+        input_bytes_left = 0;
+      end
+      else if (vif.mon_cb.in_vld && vif.mon_cb.in_rdy) begin
 
-        input_sample_count++;
+        // First byte of a fragment: sample cfg once.
+        if (input_bytes_left == 0) begin
+          input_sample_count++;
 
-        cg_input.sample(
-          vif.mon_cb.cfg[0],
-          vif.mon_cb.cfg[15:8],
-          vif.mon_cb.cfg[20:16],
-          vif.mon_cb.cfg[28:24]
-        );
+          cg_input.sample(
+            vif.mon_cb.cfg[0],
+            vif.mon_cb.cfg[15:8],
+            vif.mon_cb.cfg[20:16],
+            vif.mon_cb.cfg[28:24]
+          );
+
+          // Payload bytes + 2 CRC bytes.
+          input_bytes_left = vif.mon_cb.cfg[15:8] + 2;
+        end
+
+        if (input_bytes_left > 0) begin
+          input_bytes_left--;
+        end
       end
     end
   endtask
 
 
   task sample_outputs();
+    bit local_transfer;
+    bit remote_transfer;
+
     forever begin
       @(vif.mon_cb);
 
       if (vif.mon_cb.rst_n) begin
+        local_transfer  = vif.mon_cb.local_vld  && vif.mon_cb.local_rdy;
+        remote_transfer = vif.mon_cb.remote_vld && vif.mon_cb.remote_rdy;
 
-        if (vif.mon_cb.local_vld && vif.mon_cb.local_rdy) begin
+        if (local_transfer) begin
           local_sample_count++;
-          cg_output.sample(1'b1, 1'b0);
         end
 
-        if (vif.mon_cb.remote_vld && vif.mon_cb.remote_rdy) begin
+        if (remote_transfer) begin
           remote_sample_count++;
-          cg_output.sample(1'b0, 1'b1);
         end
 
+        // Sample every cycle so no-transfer bins can also be covered.
+        cg_output.sample(local_transfer, remote_transfer);
       end
     end
   endtask
@@ -270,30 +302,97 @@ class bird_coverage;
   task sample_drop_reasons();
     logic [31:0] c;
 
+    bit is_remote;
+    bit seq_zero;
+    bit frag_zero;
+    bit len_zero;
+    bit reserved_nonzero;
+    bit local_frag_not_one;
+    bit remote_mismatch_seq;
+    bit basic_invalid;
+
     forever begin
       @(vif.mon_cb);
 
-      if (vif.mon_cb.rst_n &&
-          vif.mon_cb.in_vld &&
-          vif.mon_cb.in_rdy) begin
+      if (!vif.mon_cb.rst_n) begin
+        drop_reason_bytes_left = 0;
+        clear_cov_remote_state();
+      end
+      else if (vif.mon_cb.in_vld && vif.mon_cb.in_rdy) begin
 
-        c = vif.mon_cb.cfg;
+        // First byte of a fragment: evaluate cfg once.
+        if (drop_reason_bytes_left == 0) begin
+          c = vif.mon_cb.cfg;
 
-        cg_drop_reason.sample(
-          (c[28:24] == 5'd0),                                      // SEQ_NUM == 0
-          (c[20:16] == 5'd0),                                      // FRAG_NUM == 0
-          (c[15:8]  == 8'd0),                                      // PAYLOAD_LEN == 0
-          (c[7:1] != 7'd0 || c[23:21] != 3'd0 || c[31:29] != 3'd0), // reserved bits
-          (c[0] == 1'b0 && c[20:16] != 5'd1),                      // local frag_num != 1
-          (c[0] == 1'b0 && c[28:24] != 5'd1),                      // local seq_num != 1
-          (c[0] == 1'b1 && c[28:24] > c[20:16])                    // remote mismatch
-        );
+          is_remote          = c[0];
+          seq_zero           = (c[28:24] == 5'd0);
+          frag_zero          = (c[20:16] == 5'd0);
+          len_zero           = (c[15:8]  == 8'd0);
+          reserved_nonzero   = (c[7:1]   != 7'd0) ||
+                               (c[23:21] != 3'd0) ||
+                               (c[31:29] != 3'd0);
+          local_frag_not_one = (c[0] == 1'b0 && c[20:16] != 5'd1);
+
+          basic_invalid = seq_zero ||
+                          frag_zero ||
+                          len_zero ||
+                          reserved_nonzero ||
+                          local_frag_not_one;
+
+          remote_mismatch_seq = 1'b0;
+
+          // Correct remote mismatch logic:
+          // A remote fragment has a different SEQ_NUM while another
+          // remote packet is being accumulated.
+          if (is_remote && !basic_invalid) begin
+            if (cov_remote_active && (c[28:24] != cov_active_seq)) begin
+              remote_mismatch_seq = 1'b1;
+            end
+          end
+
+          cg_drop_reason.sample(
+            seq_zero,
+            frag_zero,
+            len_zero,
+            reserved_nonzero,
+            local_frag_not_one,
+            remote_mismatch_seq
+          );
+
+          // Update simple remote accumulation state for future mismatch detection.
+          if (basic_invalid || remote_mismatch_seq) begin
+            if (is_remote || cov_remote_active) begin
+              clear_cov_remote_state();
+            end
+          end
+          else if (is_remote) begin
+            if (!cov_remote_active) begin
+              cov_remote_active = 1'b1;
+              cov_active_seq    = c[28:24];
+            end
+          end
+
+          // Payload bytes + 2 CRC bytes.
+          drop_reason_bytes_left = c[15:8] + 2;
+        end
+
+        if (drop_reason_bytes_left > 0) begin
+          drop_reason_bytes_left--;
+        end
       end
     end
   endtask
 
 
   function void report();
+    real total_cov;
+
+    total_cov = (cg_input.get_coverage()
+              + cg_output.get_coverage()
+              + cg_drop.get_coverage()
+              + cg_handshake.get_coverage()
+              + cg_drop_reason.get_coverage()) / 5.0;
+
     $display("");
     $display("================ BIRD FUNCTIONAL COVERAGE REPORT ================");
     $display("Input samples              : %0d", input_sample_count);
@@ -306,14 +405,7 @@ class bird_coverage;
     $display("cg_drop coverage           = %0.2f%%", cg_drop.get_coverage());
     $display("cg_handshake coverage      = %0.2f%%", cg_handshake.get_coverage());
     $display("cg_drop_reason coverage    = %0.2f%%", cg_drop_reason.get_coverage());
-
-    $display("Total functional cov       = %0.2f%%",
-             (cg_input.get_coverage()
-            + cg_output.get_coverage()
-            + cg_drop.get_coverage()
-            + cg_handshake.get_coverage()
-            + cg_drop_reason.get_coverage()) / 5.0);
-
+    $display("Total functional cov       = %0.2f%%", total_cov);
     $display("==================================================================");
     $display("");
   endfunction
