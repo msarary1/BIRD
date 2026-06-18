@@ -283,12 +283,13 @@ function void build_expected_remote_fragment(bird_input_fragment frag);
     return;
   end
 
-  if (!remote_active) begin
-    remote_active = 1;
-    active_seq = 1;
+ if (!remote_active) begin
+    remote_active   = 1;
+    active_seq      = frag_idx;   // not meaningful for single-packet, but correct
     active_max_frag = total_frags;
   end
   else begin
+    // total_frags must stay consistent across all fragments of one packet
     if (total_frags != active_max_frag) begin
       invalid_frag_count++;
       expected_drop_count++;

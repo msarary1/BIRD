@@ -77,6 +77,11 @@ module bird_tb_top;
       t = new(env);
       t.run();
     end
+    else if (testname == "remote_oo") begin
+      bird_remote_oo_test t;
+      t = new(env);
+      t.run();
+    end
     else if (testname == "invalid") begin
       bird_invalid_drop_test t;
       t = new(env);

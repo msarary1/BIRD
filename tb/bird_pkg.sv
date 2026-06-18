@@ -34,6 +34,7 @@ package bird_pkg;
   `include "tests/bird_invalid_drop_test.sv"
   `include "tests/bird_backpressure_test.sv"
   `include "tests/bird_reset_test.sv"
+  `include "tests/bird_remote_oo_test.sv"
 
 endpackage
 
