@@ -1,0 +1,99 @@
+============================================================
+BIRD FINAL DROP REASON COVERAGE SUMMARY
+============================================================
+Generated on: Thu Jun 18 17:45:25 IDT 2026
+Branch: 
+
+Compile Status:
+PASS - no compile errors
+
+Test Results:
+
+------------------------------------------------------------
+sim_final_backpressure.log
+------------------------------------------------------------
+[TOP] Selected TEST = backpressure
+SCOREBOARD RESULT : FAIL
+PROTOCOL CHECKER RESULT : FAIL
+cg_input coverage          = 28.75%
+cg_output coverage         = 41.67%
+cg_drop coverage           = 25.00%
+cg_handshake coverage      = 66.67%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 42.42%
+
+------------------------------------------------------------
+sim_final_invalid.log
+------------------------------------------------------------
+[TOP] Selected TEST = invalid
+SCOREBOARD RESULT : FAIL
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 63.75%
+cg_output coverage         = 0.00%
+cg_drop coverage           = 75.00%
+cg_handshake coverage      = 33.33%
+cg_drop_reason coverage    = 100.00%
+Total functional cov       = 54.42%
+
+------------------------------------------------------------
+sim_final_local.log
+------------------------------------------------------------
+[TOP] Selected TEST = local
+SCOREBOARD RESULT : PASS
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 28.75%
+cg_output coverage         = 41.67%
+cg_drop coverage           = 25.00%
+cg_handshake coverage      = 41.67%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 37.42%
+
+------------------------------------------------------------
+sim_final_remote.log
+------------------------------------------------------------
+[TOP] Selected TEST = remote
+SCOREBOARD RESULT : FAIL
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 27.92%
+cg_output coverage         = 41.67%
+cg_drop coverage           = 25.00%
+cg_handshake coverage      = 41.67%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 37.25%
+
+------------------------------------------------------------
+sim_final_reset.log
+------------------------------------------------------------
+[TOP] Selected TEST = reset
+SCOREBOARD RESULT : PASS
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 23.75%
+cg_output coverage         = 41.67%
+cg_drop coverage           = 25.00%
+cg_handshake coverage      = 41.67%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 36.42%
+
+------------------------------------------------------------
+sim_final_smoke.log
+------------------------------------------------------------
+[TOP] Selected TEST = smoke
+SCOREBOARD RESULT : PASS
+PROTOCOL CHECKER RESULT : PASS
+cg_input coverage          = 23.75%
+cg_output coverage         = 41.67%
+cg_drop coverage           = 25.00%
+cg_handshake coverage      = 41.67%
+cg_drop_reason coverage    = 50.00%
+Total functional cov       = 36.42%
+
+Error Scan:
+FAIL - errors found
+sim_final_backpressure.log:SCOREBOARD RESULT : FAIL
+sim_final_backpressure.log:PROTOCOL CHECKER RESULT : FAIL
+sim_final_invalid.log:SCOREBOARD RESULT : FAIL
+sim_final_remote.log:SCOREBOARD RESULT : FAIL
+
+============================================================
+END OF SUMMARY
+============================================================
