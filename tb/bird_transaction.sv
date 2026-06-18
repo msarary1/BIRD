@@ -17,7 +17,7 @@ class bird_transaction;
   // Payload only. CRC is generated automatically.
   rand u8_t payload[];
 
-  // For future negative/drop tests
+  // Used for negative/drop tests.
   bit        use_raw_cfg;
   logic [31:0] raw_cfg;
 
@@ -30,9 +30,10 @@ class bird_transaction;
     frag_num inside {[1:31]};
     seq_num  inside {[1:31]};
 
+    // Local traffic is a single fragment only.
+    // According to the spec, local SEQ_NUM has no functional impact.
     if (!is_remote) {
       frag_num == 1;
-      seq_num  == 1;
     }
   }
 
@@ -48,14 +49,16 @@ class bird_transaction;
     payload[0] = 8'h00;
 
     use_raw_cfg = 0;
-    raw_cfg = 32'h0000_0000;
+    raw_cfg     = 32'h0000_0000;
   endfunction
 
   function void set_payload(input u8_t data[]);
     payload = new[data.size()];
+
     foreach (data[i]) begin
       payload[i] = data[i];
     end
+
     payload_len = data.size();
   endfunction
 
@@ -67,6 +70,7 @@ class bird_transaction;
     end
 
     c = 32'h0000_0000;
+
     c[0]     = is_remote;
     c[15:8]  = payload_len[7:0];
     c[20:16] = frag_num[4:0];
@@ -78,7 +82,6 @@ class bird_transaction;
   // CRC16-CCITT
   // Polynomial = 0x1021
   // Initial value = 0xFFFF
-  // This matches the CRC function inside your DUT.
   function logic [15:0] calc_crc16_ccitt();
     logic [15:0] crc;
 
@@ -90,7 +93,8 @@ class bird_transaction;
       for (int b = 0; b < 8; b++) begin
         if (crc[15]) begin
           crc = (crc << 1) ^ 16'h1021;
-        end else begin
+        end
+        else begin
           crc = (crc << 1);
         end
       end
@@ -131,7 +135,7 @@ class bird_transaction;
 endclass
 
 
-// Reconstructed input fragment from input monitor
+// Reconstructed input fragment from input monitor.
 class bird_input_fragment;
 
   logic [31:0] cfg;
@@ -150,14 +154,14 @@ class bird_input_fragment;
   time end_time;
 
   function new();
-    cfg = 32'h0000_0000;
-    is_remote = 0;
+    cfg         = 32'h0000_0000;
+    is_remote   = 0;
     payload_len = 0;
-    frag_num = 0;
-    seq_num = 0;
-    input_crc = 16'h0000;
-    start_time = 0;
-    end_time = 0;
+    frag_num    = 0;
+    seq_num     = 0;
+    input_crc   = 16'h0000;
+    start_time  = 0;
+    end_time    = 0;
   endfunction
 
   function void decode_cfg();
@@ -177,7 +181,8 @@ class bird_input_fragment;
 
     if (stream.size() >= payload_len + 2) begin
       input_crc = {stream[payload_len], stream[payload_len + 1]};
-    end else begin
+    end
+    else begin
       input_crc = 16'hxxxx;
     end
   endfunction
@@ -216,10 +221,10 @@ class bird_output_item;
   time sample_time;
 
   function new(bird_output_kind_e kind = BIRD_OUT_LOCAL);
-    this.kind = kind;
-    data_byte = 8'h00;
-    data_word = 32'h0000_0000;
-    drop_cnt = 16'h0000;
+    this.kind   = kind;
+    data_byte   = 8'h00;
+    data_word   = 32'h0000_0000;
+    drop_cnt    = 16'h0000;
     sample_time = 0;
   endfunction
 
@@ -227,7 +232,8 @@ class bird_output_item;
     if (kind == BIRD_OUT_LOCAL) begin
       $display("%sLOCAL_OUT: byte=0x%02h drop_cnt=%0d time=%0t",
                prefix, data_byte, drop_cnt, sample_time);
-    end else begin
+    end
+    else begin
       $display("%sREMOTE_OUT: word=0x%08h drop_cnt=%0d time=%0t",
                prefix, data_word, drop_cnt, sample_time);
     end
