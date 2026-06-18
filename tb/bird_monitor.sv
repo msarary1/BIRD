@@ -92,34 +92,46 @@ class bird_local_monitor;
 endclass
 
 
+
 class bird_remote_monitor;
 
   virtual bird_if vif;
   mailbox #(bird_output_item) remote_mbx;
 
-  function new(virtual bird_if vif,
-               mailbox #(bird_output_item) remote_mbx);
+  function new(virtual bird_if vif, mailbox #(bird_output_item) remote_mbx);
     this.vif = vif;
     this.remote_mbx = remote_mbx;
   endfunction
 
   task run();
     bird_output_item item;
+    bit prev_remote_vld;
+    bit prev_remote_rdy;
+
+    prev_remote_vld = 1'b0;
+    prev_remote_rdy = 1'b0;
 
     forever begin
       @(vif.mon_cb);
 
-      if (vif.mon_cb.rst_n &&
-          vif.mon_cb.remote_vld &&
-          vif.mon_cb.remote_rdy) begin
+      if (!vif.mon_cb.rst_n) begin
+        prev_remote_vld = 1'b0;
+        prev_remote_rdy = 1'b0;
+      end
+      else begin
+        // Remote output is registered in the DUT.
+        // Avoid counting the first cycle of remote_vld as a completed transfer.
+        if (prev_remote_vld && prev_remote_rdy && vif.mon_cb.remote_vld) begin
+          item = new(BIRD_OUT_REMOTE);
+          item.data_word = vif.mon_cb.data_remote;
+          item.drop_cnt = vif.mon_cb.drop_cnt;
+          item.sample_time = $time;
+          item.display("[REMOTE_MON] ");
+          remote_mbx.put(item);
+        end
 
-        item = new(BIRD_OUT_REMOTE);
-        item.data_word = vif.mon_cb.data_remote;
-        item.drop_cnt = vif.mon_cb.drop_cnt;
-        item.sample_time = $time;
-
-        item.display("[REMOTE_MON] ");
-        remote_mbx.put(item);
+        prev_remote_vld = vif.mon_cb.remote_vld;
+        prev_remote_rdy = vif.mon_cb.remote_rdy;
       end
     end
   endtask

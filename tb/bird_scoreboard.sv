@@ -245,70 +245,82 @@ class bird_scoreboard;
     return complete;
   endfunction
 
-  function void build_expected_remote_fragment(bird_input_fragment frag);
-    int unsigned seq;
-    int unsigned frag_num;
+  
+function void build_expected_remote_fragment(bird_input_fragment frag);
+  int unsigned frag_idx;
+  int unsigned total_frags;
 
-    seq      = frag.seq_num;
-    frag_num = frag.frag_num;
+  // Current DUT behavior:
+  // frag.seq_num  = current fragment index
+  // frag.frag_num = total number of fragments
+  frag_idx    = frag.seq_num;
+  total_frags = frag.frag_num;
 
-    valid_remote_frag_count++;
+  valid_remote_frag_count++;
 
-    if (!remote_active) begin
-      remote_active   = 1;
-      active_seq      = seq;
-      active_max_frag = 0;
-    end
-    else if (seq != active_seq) begin
+  if (frag_idx < 1 || frag_idx > 31) begin
+    invalid_frag_count++;
+    expected_drop_count++;
+    $display("[SB] Expected DROP: illegal remote fragment index=%0d", frag_idx);
+    clear_remote_model();
+    return;
+  end
+
+  if (total_frags < 1 || total_frags > 31) begin
+    invalid_frag_count++;
+    expected_drop_count++;
+    $display("[SB] Expected DROP: illegal remote total fragments=%0d", total_frags);
+    clear_remote_model();
+    return;
+  end
+
+  if (frag_idx > total_frags) begin
+    invalid_frag_count++;
+    expected_drop_count++;
+    $display("[SB] Expected DROP: fragment index=%0d greater than total fragments=%0d",
+             frag_idx, total_frags);
+    clear_remote_model();
+    return;
+  end
+
+  if (!remote_active) begin
+    remote_active = 1;
+    active_seq = 1;
+    active_max_frag = total_frags;
+  end
+  else begin
+    if (total_frags != active_max_frag) begin
       invalid_frag_count++;
       expected_drop_count++;
-
-      $display("[SB] Expected DROP: incoming remote SEQ_NUM=%0d while active SEQ_NUM=%0d is incomplete",
-               seq, active_seq);
-
+      $display("[SB] Expected DROP: remote total fragment count changed old=%0d new=%0d",
+               active_max_frag, total_frags);
       clear_remote_model();
       return;
     end
+  end
 
-    if (frag_num < 1 || frag_num > 31) begin
-      invalid_frag_count++;
-      expected_drop_count++;
+  if (remote_frag_seen[frag_idx]) begin
+    invalid_frag_count++;
+    expected_drop_count++;
+    $display("[SB] Expected DROP: duplicate remote fragment index=%0d", frag_idx);
+    clear_remote_model();
+    return;
+  end
 
-      $display("[SB] Expected DROP: illegal remote FRAG_NUM=%0d", frag_num);
-      clear_remote_model();
-      return;
-    end
+  remote_frag_seen[frag_idx] = 1;
+  foreach (frag.payload[i]) begin
+    remote_frag_payload[frag_idx].push_back(frag.payload[i]);
+  end
 
-    if (remote_frag_seen[frag_num]) begin
-      invalid_frag_count++;
-      expected_drop_count++;
+  $display("[SB] Stored expected REMOTE fragment: index=%0d total=%0d len=%0d",
+           frag_idx, total_frags, frag.payload.size());
 
-      $display("[SB] Expected DROP: duplicate remote fragment SEQ_NUM=%0d FRAG_NUM=%0d",
-               seq, frag_num);
+  if (all_expected_remote_frags_seen(active_max_frag)) begin
+    finalize_remote_packet();
+  end
+endfunction
 
-      clear_remote_model();
-      return;
-    end
-
-    remote_frag_seen[frag_num] = 1;
-
-    foreach (frag.payload[i]) begin
-      remote_frag_payload[frag_num].push_back(frag.payload[i]);
-    end
-
-    if (frag_num > active_max_frag) begin
-      active_max_frag = frag_num;
-    end
-
-    $display("[SB] Stored expected REMOTE fragment: seq=%0d frag=%0d len=%0d",
-             seq, frag_num, frag.payload.size());
-
-    if (all_expected_remote_frags_seen(active_max_frag)) begin
-      finalize_remote_packet();
-    end
-  endfunction
-
-  function void finalize_remote_packet();
+function void finalize_remote_packet();
     u8_t merged[$];
     logic [15:0] crc;
     bit complete;
@@ -414,66 +426,65 @@ class bird_scoreboard;
     end
   endfunction
 
-  function void compare_drop_count();
-    logic [15:0] observed_drop_count;
-    logic [15:0] expected_drop_count_16;
+  
+function void compare_drop_count();
+  logic [15:0] observed_drop_count;
+  logic [15:0] expected_drop_count_16;
 
-    observed_drop_count = vif.drop_cnt;
-    expected_drop_count_16 = expected_drop_count[15:0];
+  observed_drop_count = vif.drop_cnt;
+  expected_drop_count_16 = expected_drop_count[15:0];
 
-    if (observed_drop_count !== expected
+  if (observed_drop_count !== expected_drop_count_16) begin
+    sb_error($sformatf("DROP count mismatch: expected=%0d observed=%0d",
+                       expected_drop_count_16, observed_drop_count));
+  end
+endfunction
 
-                         expected_drop_count_16, observed_drop_count));
-    
-  endfunction
+function void compare_all();
+  if (compared) begin
+    return;
+  end
 
-  function v
-    if (compa
-      r
+  finalize_remote_packet();
+  compare_local();
+  compare_remote();
+  compare_drop_count();
 
+  compared = 1;
+endfunction
 
-    finalize_remote_packet();
+function void report();
+  compare_all();
 
-    compa
-    compare_remote();
-    c
+  $display("");
+  $display("==================== BIRD SCOREBOARD REPORT ====================");
+  $display("Input fragments observed      : %0d", input_frag_count);
+  $display("Valid local fragments         : %0d", valid_local_frag_count);
+  $display("Valid remote fragments        : %0d", valid_remote_frag_count);
+  $display("Invalid fragments expected    : %0d", invalid_frag_count);
+  $display("Expected drop count events    : %0d", expected_drop_count);
+  $display("");
+  $display("Expected local bytes          : %0d", exp_local_q.size());
+  $display("Observed local bytes          : %0d", got_local_q.size());
+  $display("Checked local bytes           : %0d", checked_local_bytes);
+  $display("");
+  $display("Expected remote words         : %0d", exp_remote_q.size());
+  $display("Observed remote words         : %0d", got_remote_q.size());
+  $display("Checked remote words          : %0d", checked_remote_words);
+  $display("");
+  $display("Warnings                      : %0d", warning_count);
+  $display("Errors                        : %0d", error_count);
 
-    compared = 1;
-  endfunc
+  if (error_count == 0) begin
+    $display("SCOREBOARD RESULT : PASS");
+  end
+  else begin
+    $display("SCOREBOARD RESULT : FAIL");
+  end
 
-  function void report();
-    compare_all();
-
-    $display("");
-    $display("==========
-    $display("Input fragments 
-
-    $display("Valid remote 
-    $display(
-    $di
-
-    $display("");
-    $display("Exp
-
-    $display("Checked local bytes  
-    $display("");
-    $display("Expected remote words          
-    $di
-
-    $display("");
-    $display("Warnings 
-    $display("Errors             
-
-    if
-
-    end
-    else begin
-      $display("SCOREBOARD RESULT              : FAIL")
-    end
-
-    $display("==========================
-
-  endfunction
+  $display("================================================================");
+  $display("");
+endfunction
 
 endclass
 

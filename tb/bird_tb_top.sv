@@ -11,25 +11,20 @@ module bird_tb_top;
   bird dut (
     .clk         (clk),
     .rst_n       (bird_vif.rst_n),
-
     .in_vld      (bird_vif.in_vld),
     .in_rdy      (bird_vif.in_rdy),
     .data_in     (bird_vif.data_in),
     .cfg         (bird_vif.cfg),
-
     .drop_cnt    (bird_vif.drop_cnt),
-
     .local_vld   (bird_vif.local_vld),
     .local_rdy   (bird_vif.local_rdy),
     .data_local  (bird_vif.data_local),
-
     .remote_vld  (bird_vif.remote_vld),
     .remote_rdy  (bird_vif.remote_rdy),
     .data_remote (bird_vif.data_remote)
   );
 
   bird_env env;
-  bird_smoke_test test;
 
   initial begin
     clk = 1'b0;
@@ -45,7 +40,6 @@ module bird_tb_top;
     bird_vif.remote_rdy = 1'b1;
 
     repeat (5) @(posedge clk);
-
     bird_vif.rst_n = 1'b1;
 
     $display("[TOP] Reset deasserted at time %0t", $time);
@@ -57,15 +51,52 @@ module bird_tb_top;
   end
 
   initial begin
-    wait (bird_vif.rst_n === 1'b1);
+    string testname;
 
+    wait (bird_vif.rst_n === 1'b1);
     repeat (2) @(posedge clk);
 
-    test = new(env);
-    test.run();
+    if (!$value$plusargs("TEST=%s", testname)) begin
+      testname = "smoke";
+    end
+
+    $display("[TOP] Selected TEST = %s", testname);
+
+    if (testname == "smoke") begin
+      bird_smoke_test t;
+      t = new(env);
+      t.run();
+    end
+    else if (testname == "local") begin
+      bird_local_test t;
+      t = new(env);
+      t.run();
+    end
+    else if (testname == "remote") begin
+      bird_remote_test t;
+      t = new(env);
+      t.run();
+    end
+    else if (testname == "invalid") begin
+      bird_invalid_drop_test t;
+      t = new(env);
+      t.run();
+    end
+    else if (testname == "backpressure") begin
+      bird_backpressure_test t;
+      t = new(env);
+      t.run();
+    end
+    else if (testname == "reset") begin
+      bird_reset_test t;
+      t = new(env);
+      t.run();
+    end
+    else begin
+      $error("[TOP] Unknown TEST=%s", testname);
+    end
 
     #100;
-
     $finish;
   end
 
