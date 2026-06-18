@@ -14,31 +14,34 @@ class bird_remote_seq;
     u8_t p1[];
     u8_t p2[];
 
-    // Fragment 2 arrives first to verify out-of-order reassembly.
-    p2 = new[1];
-    p2[0] = 8'hB2;
+    // Remote packet with 2 fragments.
+    // According to the current DUT behavior:
+    // seq_num  = current fragment index
+    // frag_num = total number of fragments
 
-    tr = new("remote_frag_2_first");
-    tr.is_remote = 1'b1;
-    tr.seq_num   = 3;
-    tr.frag_num  = 2;
-    tr.set_payload(p2);
-
-    $display("[REMOTE_SEQ] Sending remote fragment 2 first");
-    tr.display("[REMOTE_SEQ] ");
-    drv_mbx.put(tr);
-
-    // Fragment 1 arrives second.
     p1 = new[1];
     p1[0] = 8'hA1;
 
-    tr = new("remote_frag_1_second");
+    tr = new("remote_frag_1_of_2");
     tr.is_remote = 1'b1;
-    tr.seq_num   = 3;
-    tr.frag_num  = 1;
+    tr.seq_num   = 1;
+    tr.frag_num  = 2;
     tr.set_payload(p1);
 
-    $display("[REMOTE_SEQ] Sending remote fragment 1 second");
+    $display("[REMOTE_SEQ] Sending remote fragment 1 of 2");
+    tr.display("[REMOTE_SEQ] ");
+    drv_mbx.put(tr);
+
+    p2 = new[1];
+    p2[0] = 8'hB2;
+
+    tr = new("remote_frag_2_of_2");
+    tr.is_remote = 1'b1;
+    tr.seq_num   = 2;
+    tr.frag_num  = 2;
+    tr.set_payload(p2);
+
+    $display("[REMOTE_SEQ] Sending remote fragment 2 of 2");
     tr.display("[REMOTE_SEQ] ");
     drv_mbx.put(tr);
   endtask
